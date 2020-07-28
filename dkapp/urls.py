@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'dkapp'
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('contacts/', views.contacts, name='contacts'),
-    path('contacts/<int:contact_id>/', views.contact, name='contact'),
+    path('', views.IndexView.as_view(), name='index'),
+    path('contacts/', views.ContactsView.as_view(), name='contacts'),
+    path('contacts/<int:pk>/', views.ContactView.as_view(), name='contact'),
 ]

@@ -1,27 +1,30 @@
-from django.http import Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
 from django.urls import reverse
+from django.views import generic
 
 from .models import Contact
 
 
-def index(request):
-    return HttpResponse("Hello, world. Direktkreditverwaltung. TODO links")
+class IndexView(generic.TemplateView):
+    template_name = 'index.html'
 
 
-def contacts(request):
-    contacts = Contact.objects.order_by('last_name', 'first_name')
-    return render(request, 'contacts/index.html', {'contacts': contacts})
+class ContactsView(generic.ListView):
+    template_name = 'contacts/index.html'
+    context_object_name = 'contacts'
+
+    def get_queryset(self):
+        return Contact.objects.order_by('last_name', 'first_name')
 
 
-def contact(request, contact_id):
-    # TODO class based views
-    if request.method == 'GET':
+class ContactView(generic.DetailView):
+    model = Contact
+    template_name = 'contacts/detail.html'
+
+    def post(self, *args, **kwargs):
+        contact_id = kwargs['pk']
         contact = get_object_or_404(Contact, pk=contact_id)
-        return render(request, 'contacts/show.html', {'contact': contact})
-    elif request.method == 'POST':
-        contact = get_object_or_404(Contact, pk=contact_id)
-        contact.first_name = request.POST['first_name']
+        contact.first_name = self.request.POST['first_name']
         contact.save()
         return HttpResponseRedirect(reverse('dkapp:contact', args=(contact_id,)))
