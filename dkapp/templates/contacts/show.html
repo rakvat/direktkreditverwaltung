@@ -1,0 +1,14 @@
+{{ contact.id }} {{ contact.last_name }} {{contact.first_name}}
+
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'dkapp:contact' contact.id %}" method="post">
+{% csrf_token %}
+<input name="first_name" id="first_name" value="{{ contact.first_name }}">
+<label for="first_name">Vorname</label><br>
+<input type="submit" value="Speichern">
+</form>
+
+
+<a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>

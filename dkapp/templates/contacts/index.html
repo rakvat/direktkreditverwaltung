@@ -1,0 +1,19 @@
+{% if contacts %}
+    <table>
+    {% for contact in contacts %}
+    <tr>
+        <td>
+            <a href="{% url 'dkapp:contact' contact.id %}">{{ contact.id }}</a>
+        </td>
+        <td>
+            {{contact.last_name}}
+        </td>
+        <td>
+            {{contact.first_name}}
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>Du hast noch keine Kontakte eingetragen</p>
+{% endif %}
