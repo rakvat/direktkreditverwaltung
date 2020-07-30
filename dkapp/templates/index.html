@@ -2,6 +2,27 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
 
-<h1>Direktkredit Verwaltung</h1>
+<h1>Direktkreditverwaltung</h1>
+
+<h2>Datenbanken</h3>
+
+<h3>Personen</h3>
 
 <a href="{% url 'dkapp:contacts' %}">Kontakte</a>
+
+<h3>Verträge</h3>
+<a href="{% url 'dkapp:contracts' %}">Direktkreditverträge</a> (mit Möglichkeit zur Erstellung von Kontoauszügen, Vertragsversionen und zum Hinzufügen von Buchungen)
+
+<h3>Versionen von Verträgen</h3>
+<a href="{% url 'dkapp:contract_versions' %}">Versionen der Verträge</a>
+
+<h3>Buchungen</h3>
+<a href="{% url 'dkapp:accounting_entries' %}">Alle Buchungen</a> (mit Möglichkeit zum zeitlichen Filtern)
+
+<h2>Auswertungen</h2>
+<ul>
+    <li><a href="{% url 'dkapp:contracts_interest' %}">Zinsen</a> (auch zur Erzeugung der Zinsbriefe am Jahresende)</li>
+    <li><a href="{% url 'dkapp:contracts_interest_transfer_list' %}">Zinsüberweisungsliste</a></li>
+    <li><a href="{% url 'dkapp:contracts_interest_average' %}">Durchschnittlicher Zinssatz</a></li>
+    <li><a href="{% url 'dkapp:contracts_expiring' %}">Auslaufende Verträge</a></li>
+</ul>
