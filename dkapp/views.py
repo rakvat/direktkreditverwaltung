@@ -21,10 +21,10 @@ class ContactsView(generic.ListView):
     @staticmethod
     def new(request):
         form = ContactForm()
-        return render(request, 'form.html', {'form': form})
+        return render(request, 'form.html', {'form': form, 'action_url': reverse('dkapp:contacts')})
 
-    def post(self):
-        form = ContactForm(self.request.POST)
+    def post(self, request):
+        form = ContactForm(request.POST)
         if form.is_valid():
             contact = form.save()
             return HttpResponseRedirect(reverse('dkapp:contact', args=(contact.id,)))
@@ -41,7 +41,10 @@ class ContactView(generic.DetailView):
         contact_id = kwargs['pk']
         contact = get_object_or_404(Contact, pk=contact_id)
         form = ContactForm(instance=contact)
-        return render(request, 'form.html', {'form': form})
+        return render(request, 'form.html', {
+            'form': form,
+            'action_url': reverse('dkapp:contact', args=(contact.id,)),
+        })
 
     def post(self, *args, **kwargs):
         contact_id = kwargs['pk']
