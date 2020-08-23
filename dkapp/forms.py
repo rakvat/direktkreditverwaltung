@@ -4,10 +4,18 @@ from .models import Contact
 
 class ContactForm(forms.ModelForm):
     class Meta:
-        model=Contact
-        fields=('first_name', 'last_name')
+        model = Contact
+        exclude = ['updated_at', 'created_at']
         labels = {
             "first_name": "Vorname",
+            "last_name": "Nachname",
+            "address": "Adresse",
+            "phone": "Telefonnummer",
+            "email": "E-Mail",
+            "iban": "IBAN",
+            "bic": "BIC",
+            "bank_name": "Bankname",
+            "remark": "Bemerkung",
         }
 
 

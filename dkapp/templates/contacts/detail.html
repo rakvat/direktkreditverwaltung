@@ -1,14 +1,51 @@
-{{ contact.id }} {{ contact.last_name }} {{contact.first_name}}
+{% if error_message %}<div><strong>{{ error_message }}</strong></div>{% endif %}
 
+<div>
+  <b>Name:</b>
+  {{contact.last_name}}
+</div>
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<div>
+  <b>Vorname:</b>
+  {{contact.first_name}}
+</div>
 
-<form action="{% url 'dkapp:contact' contact.id %}" method="post">
-{% csrf_token %}
-<input name="first_name" id="first_name" value="{{ contact.first_name }}">
-<label for="first_name">Vorname</label><br>
-<input type="submit" value="Speichern">
-</form>
+<div>
+  <b>Adresse:</b>
+  {{contact.address}}
+</div>
 
+<div>
+  <b>E-Mail:</b>
+  {{contact.email}}
+</div>
 
-<a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>
+<div>
+  <b>Telefonnummer:</b>
+  {{contact.phone}}
+</div>
+
+<div>
+  <b>IBAN:</b>
+  {{contact.iban}}
+</div>
+
+<div>
+  <b>BIC:</b>
+  {{contact.bic}}
+</div>
+
+<div>
+  <b>Bankname:</b>
+  {{contact.bank_name}}
+</div>
+
+<div>
+  <b>Bemerkung:</b>
+  {{contact.remark}}
+</div>
+
+<div>
+    <a href="{% url 'dkapp:contact_edit' contact.id %}">Editieren</a></br>
+    <a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>
+</div>

@@ -1,19 +1,45 @@
+<h1>Übersicht Kontakte</h1>
+
+<a href="{% url 'dkapp:contacts_new' %}">Neuen Kontakt erstellen</a>
+
 {% if contacts %}
-    <table>
-    {% for contact in contacts %}
-    <tr>
-        <td>
-            <a href="{% url 'dkapp:contact' contact.id %}">{{ contact.id }}</a>
-        </td>
-        <td>
-            {{contact.last_name}}
-        </td>
-        <td>
-            {{contact.first_name}}
-        </td>
-    </tr>
-    {% endfor %}
+    <table class='table'>
+      <tr>
+        <th>Name</th>
+        <th>Vorname</th>
+        <th>Adresse</th>
+        <th>E-Mail</th>
+        <th>Telefon</th>
+        <th>Kontonummer</th>
+        <th>BLZ</th>
+        <th>Bankname</th>
+        <th>Bemerkung</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+
+      {% for contact in contacts %}
+          <tr>
+              <td>{{contact.last_name}}</td>
+              <td>{{contact.first_name}}</td>
+              <td>{{contact.address}}</td>
+              <td>{{contact.email}}</td>
+              <td>{{contact.phone}}</td>
+              <td>{{contact.iban}}</td>
+              <td>{{contact.bic}}</td>
+              <td>{{contact.bank_name}}</td>
+              <td>{{contact.remark}}</td>
+              <td><a href="{% url 'dkapp:contact' contact.id %}">Anzeigen</a></td>
+              <td><a href="{% url 'dkapp:contact_edit' contact.id %}">Editieren</a></td>
+              <td><a href="{% url 'dkapp:contact' contact.id %}">Löschen</a></td>
+              <td><a href="{% url 'dkapp:contact' contact.id %}">Vertrag erstellen</a></td>
+          </tr>
+      {% endfor %}
     </table>
 {% else %}
     <p>Du hast noch keine Kontakte eingetragen</p>
 {% endif %}
+
+
