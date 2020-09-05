@@ -40,7 +40,11 @@ class Contract(models.Model):
     def balance(self, date=None):
         """Account balance for given date"""
         date = date or timezone.now()
-        return self.accountingentry_set.filter(date__lte=date).aggregate(models.Sum('amount'))['amount__sum'] or 0
+        return self.accountingentry_set .filter(
+            date__lte=date
+        ).aggregate(
+            models.Sum('amount')
+        )['amount__sum'] or 0
 
     @property
     def last_version(self):

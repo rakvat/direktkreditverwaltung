@@ -58,23 +58,41 @@ class ContractForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        contact_id = kwargs.pop('contact_id')
+        contact = kwargs.pop('contact')
+        contract_version = kwargs.pop('contract_version')
+
         super(ContractForm, self).__init__(*args, **kwargs)
+
         self.fields['start'].widget.attrs['placeholder'] = "DD.MM.YYYY"
-        if contact_id:
-            contact = Contact.objects.get(pk=contact_id)
+        if contact:
             self.fields['contact'].initial = contact
+        if contract_version:
+            self.fields['start'].initial = contract_version.start
+            self.fields['duration_months'].initial = contract_version.duration_months
+            self.fields['duration_years'].initial = contract_version.duration_years
+            self.fields['interest_rate'].initial = contract_version.interest_rate * 100
 
     def save(self, commit=True):
         contract = super(ContractForm, self).save(commit=commit)
-        contract_version = ContractVersion(
-            contract_id=contract.id,
-            start=self.cleaned_data['start'],
-            duration_months=self.cleaned_data['duration_months'],
-            duration_years=self.cleaned_data['duration_years'],
-            interest_rate=self.cleaned_data['interest_rate'] / 100.0,
-            version=1,  # first version of contract
-        )
+        contract_version = None
+        if contract.contractversion_set.count():
+            # update existing contract
+            contract_version = contract.last_version
+            contract_version.start = self.cleaned_data['start']
+            contract_version.duration_months = self.cleaned_data['duration_months']
+            contract_version.duration_years = self.cleaned_data['duration_years']
+            contract_version.interest_rate = self.cleaned_data['interest_rate'] / 100.0
+        else:
+            # create new contract - we need to create the first contract
+            # version
+            contract_version = ContractVersion(
+                contract_id=contract.id,
+                start=self.cleaned_data['start'],
+                duration_months=self.cleaned_data['duration_months'],
+                duration_years=self.cleaned_data['duration_years'],
+                interest_rate=self.cleaned_data['interest_rate'] / 100.0,
+                version=1,  # first version of contract
+            )
         if contract_version and (contract_version.duration_years or contract_version.duration_months):
             contract_version.save()
 

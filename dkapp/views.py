@@ -88,14 +88,15 @@ class ContractsView(generic.ListView):
     @staticmethod
     def new(request):
         contact_id = request.GET.get('contact_id')
-        form = ContractForm(contact_id=contact_id)
+        contact = Contact.objects.get(pk=contact_id) if contact_id else None
+        form = ContractForm(contact=contact, contract_version=None)
         return render(request, 'form.html', {
             'form': form,
             'action_url': reverse('dkapp:contracts')},
          )
 
     def post(self, request):
-        form = ContractForm(request.POST)
+        form = ContractForm(request.POST, contact=None, contract_version=None)
         if form.is_valid():
             contract = form.save()
             return HttpResponseRedirect(reverse('dkapp:contract', args=(contract.id,)))
@@ -123,7 +124,11 @@ class ContractView(generic.DetailView):
     def edit(request, *args, **kwargs):
         contract_id = kwargs['pk']
         contract = get_object_or_404(Contract, pk=contract_id)
-        form = ContractForm(instance=contract)
+        form = ContractForm(
+            instance=contract,
+            contact=contract.contact,
+            contract_version=contract.last_version
+        )
         return render(request, 'form.html', {
             'form': form,
             'action_url': reverse('dkapp:contract', args=(contract.id,)),
@@ -131,8 +136,13 @@ class ContractView(generic.DetailView):
 
     def post(self, *args, **kwargs):
         contract_id = kwargs['pk']
-        contract = get_object_or_404(Contact, pk=contract_id)
-        form = ContractForm(self.request.POST, instance=contract)
+        contract = get_object_or_404(Contract, pk=contract_id)
+        form = ContractForm(
+            self.request.POST,
+            instance=contract,
+            contact=contract.contact,
+            contract_version=contract.last_version,
+        )
         if form.is_valid():
             form.save()
 
