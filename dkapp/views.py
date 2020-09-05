@@ -87,8 +87,12 @@ class ContractsView(generic.ListView):
 
     @staticmethod
     def new(request):
-        form = ContractForm()
-        return render(request, 'form.html', {'form': form, 'action_url': reverse('dkapp:contracts')})
+        contact_id = request.GET.get('contact_id')
+        form = ContractForm(contact_id=contact_id)
+        return render(request, 'form.html', {
+            'form': form,
+            'action_url': reverse('dkapp:contracts')},
+         )
 
     def post(self, request):
         form = ContractForm(request.POST)

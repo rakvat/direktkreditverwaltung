@@ -6,6 +6,10 @@
 
 {% if error_message %}<div><strong>{{ error_message }}</strong></div>{% endif %}
 
+<p>
+Start, Laufzeit und Zinssatz der <i>letzen Version</i> des Vertrags
+</p>
+
 <div>
   <b>Nummer:</b>
   {{contract.number}}
@@ -60,7 +64,7 @@
     <a href="{% url 'dkapp:contract_accounting_entries' contract.id %}">Kontoauszug</a><br/>
 
     <hr>
-    <a href="{% url 'dkapp:contracts' %}">Alle Veräge</a><br/>
+    <a href="{% url 'dkapp:contracts' %}">Alle Verträge</a><br/>
     <a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>
 </div>
 {% endblock %}

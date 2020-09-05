@@ -13,7 +13,7 @@ div.dkapp-form {
   margin: 10px 0;
 
 }
-div.dkapp-form input {
+div.dkapp-form input,textarea,select {
   margin-bottom: 20px;
 }
 

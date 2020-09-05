@@ -15,7 +15,11 @@ Start, Laufzeit und Zinssatz sind aus der letzten Version des Vertrags.
 </p>
 
 <p>
+{% if contact %}
+<a href="{% url 'dkapp:contracts_new' %}?contact_id={{contact.id}}">Neuen Vertrag für {{contact.full_name}} erstellen</a>
+{% else %}
 <a href="{% url 'dkapp:contracts_new' %}">Neuen Vertrag erstellen</a>
+{% endif %}
 </p>
 
 {% if contracts %}
@@ -28,7 +32,7 @@ Start, Laufzeit und Zinssatz sind aus der letzten Version des Vertrags.
     <th>Laufzeit in Monaten</th>
     <th>Laufzeit in Jahren</th>
     <th>Zinssatz</th>
-    <th>Typ</th>
+    <th>Kategorie</th>
     <th>Bemerkung</th>
     <th></th>
     <th></th>
