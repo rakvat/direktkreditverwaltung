@@ -43,7 +43,7 @@ Start, Laufzeit und Zinssatz sind aus der letzten Version des Vertrags.
       <td>{{contract.last_version.start | date:"SHORT_DATE_FORMAT"}}</td>
       <td>{{contract.last_version.duration_months | default_if_none:'-'}}</td>
       <td>{{contract.last_version.duration_years | default_if_none:'-'}}</td>
-      <td>{{contract.last_version.interest_rate | faction}}</td>
+      <td>{{contract.last_version.interest_rate | fraction}}</td>
       <td>{{contract.category}}</td>
       <td>{{contract.comment}}</td>
       <td><a href="{% url 'dkapp:contract' contract.id %}">Anzeigen</a></td>

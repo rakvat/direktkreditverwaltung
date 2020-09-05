@@ -1,64 +1,66 @@
 {% extends "base.html" %}
-{% block title %}Kontakt {{contact.last_name}}{% endblock %}
+{% load my_filters %}
+{% block title %}Direktkreditvertrag {{contract.number}}{% endblock %}
 
 {% block content %}
 
 {% if error_message %}<div><strong>{{ error_message }}</strong></div>{% endif %}
 
 <div>
-  <b>Name:</b>
-  {{contact.last_name}}
+  <b>Nummer:</b>
+  {{contract.number}}
 </div>
 
 <div>
-  <b>Vorname:</b>
-  {{contact.first_name}}
+  <b>Kontakt:</b>
+  {{contract.contact.full_name}}
 </div>
 
 <div>
-  <b>Adresse:</b>
-  {{contact.address}}
+  <b>Kontostand:</b>
+  {{contract.balance | euro}}
 </div>
 
 <div>
-  <b>E-Mail:</b>
-  {{contact.email}}
+  <b>Start:</b>
+  {{contract.last_version.start | date:"SHORT_DATE_FORMAT"}}
 </div>
 
 <div>
-  <b>Telefonnummer:</b>
-  {{contact.phone}}
+  <b>Laufzeit in Monaten:</b>
+  {{contract.last_version.duration_months | default_if_none:'-'}}
 </div>
 
 <div>
-  <b>IBAN:</b>
-  {{contact.iban}}
+  <b>Laufzeit in Jahren:</b>
+  {{contract.last_version.duration_years | default_if_none:'-'}}
 </div>
 
 <div>
-  <b>BIC:</b>
-  {{contact.bic}}
+  <b>Zinssatz:</b>
+  {{contract.last_version.interest_rate | fraction}}
 </div>
 
 <div>
-  <b>Bankname:</b>
-  {{contact.bank_name}}
+  <b>Typ:</b>
+  {{contract.category}}
 </div>
 
 <div>
   <b>Bemerkung:</b>
-  {{contact.remark}}
+  {{contract.comment}}
 </div>
 
+<br/>
 <div>
-    <a href="{% url 'dkapp:contract_edit' contract.id %}">Editieren</a></br>
-    <a href="{% url 'dkapp:contract_delete' contract.id %}">Löschen</a></br>
-
-      <td><%= link_to 'Buchung erstellen', new_contract_accounting_entry_path(contract) %>
-          <%= link_to 'Vertragsversion erstellen', new_contract_contract_version_path(contract) %>
-          <%= link_to 'Kontoauszug', contract_accounting_entries_path(contract) %></td>
+    <a href="{% url 'dkapp:contract_edit' contract.id %}">Editieren</a><br/>
+    <a href="{% url 'dkapp:contract_delete' contract.id %}">Löschen</a><br/>
+    <a href="{% url 'dkapp:contract_accounting_entry_new' contract.id %}">Buchung erstellen</a><br/>
+    <a href="{% url 'dkapp:contract_version_new' contract.id %}">Vertragsversion erstellen</a><br/>
+    <a href="{% url 'dkapp:contract_accounting_entries' contract.id %}">Kontoauszug</a><br/>
 
     <hr>
+    <a href="{% url 'dkapp:contracts' %}">Alle Veräge</a><br/>
     <a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>
 </div>
 {% endblock %}

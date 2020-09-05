@@ -14,4 +14,4 @@ def fraction(value):
 
 
 register.filter('euro', euro)
-register.filter('faction', fraction)
+register.filter('fraction', fraction)
