@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
@@ -54,6 +54,16 @@ class ContactView(generic.DetailView):
             form.save()
 
         return HttpResponseRedirect(reverse('dkapp:contact', args=(contact.id,)))
+
+
+class ContactDeleteView(generic.edit.DeleteView):
+    template_name = 'object_confirm_delete.html'
+
+    def get_object(self, *args, **kwargs):
+        return get_object_or_404(Contact, pk=self.kwargs['pk'])
+
+    def get_success_url(self):
+        return reverse('dkapp:contacts')
 
 
 class ContractsView(generic.ListView):

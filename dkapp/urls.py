@@ -10,6 +10,7 @@ urlpatterns = [
     path('contacts/new/', views.ContactsView.new, name='contacts_new'),
     path('contacts/<int:pk>/', views.ContactView.as_view(), name='contact'),
     path('contacts/<int:pk>/edit', views.ContactView.edit, name='contact_edit'),
+    path('contacts/<int:pk>/delete', views.ContactDeleteView.as_view(), name='contact_delete'),
 
     path('contracts/', views.ContractsView.as_view(), name='contracts'),
     path('contracts_interest/', views.ContractsView.interest, name='contracts_interest'),

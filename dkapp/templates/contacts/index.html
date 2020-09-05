@@ -17,7 +17,6 @@
         <th></th>
         <th></th>
         <th></th>
-        <th></th>
       </tr>
 
       {% for contact in contacts %}
@@ -33,7 +32,6 @@
               <td>{{contact.remark}}</td>
               <td><a href="{% url 'dkapp:contact' contact.id %}">Anzeigen</a></td>
               <td><a href="{% url 'dkapp:contact_edit' contact.id %}">Editieren</a></td>
-              <td><a href="{% url 'dkapp:contact' contact.id %}">Löschen</a></td>
               <td><a href="{% url 'dkapp:contact' contact.id %}">Vertrag erstellen</a></td>
           </tr>
       {% endfor %}
