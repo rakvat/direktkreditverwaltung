@@ -153,10 +153,10 @@ class ContractDeleteView(generic.edit.DeleteView):
     template_name = 'object_confirm_delete.html'
 
     def get_object(self, *args, **kwargs):
-        return get_object_or_404(Contact, pk=self.kwargs['pk'])
+        return get_object_or_404(Contract, pk=self.kwargs['pk'])
 
     def get_success_url(self):
-        return reverse('dkapp:contacts')
+        return reverse('dkapp:contracts')
 
 
 class ContractVersionsView(generic.ListView):

@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Confirm delete{% endblock %}
+{% block title %}Löschen bestätigen{% endblock %}
 
 {% block content %}
     <div id="content-container" class="container p-none">
         <div class="side-p">
-            <h3>Are you sure?</h3>
-            <p>You're about to delete {{ object }}. Please confirm.</p>
+            <h3>Bist du sicher?</h3>
+            <p>Willst du wirklich {{ object }} löschen? Wenn du sicher bist, bestätige bitte.</p>
             <form action="" method="post">
                 {% csrf_token %}
                 <input class="btn btn-link"
-                       type="button" value="Cancel"
+                       type="button" value="Abbrechen"
                        onclick="window.history.go(-1);"/>
-                <input class="btn btn-danger" type="submit" value="Confirm"/>
+                <input class="btn btn-danger" type="submit" value="Bestätigen"/>
             </form>
         </div>
     </div>
