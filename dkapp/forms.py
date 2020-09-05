@@ -99,13 +99,13 @@ class ContractForm(forms.ModelForm):
         return contract
 
 
-class ContractVersionForm(forms.Form):
-    start = forms.DateTimeField()
-    duration_months = forms.IntegerField()
-    duration_years = forms.IntegerField()
-    interest_rate = forms.FloatField()
+class ContractVersionForm(forms.ModelForm):
+    class Meta:
+        model = ContractVersion
+        exclude = ['updated_at', 'created_at']
 
 
-class AccountingEntryForm(forms.Form):
-    date = forms.DateTimeField
-    amount = forms.FloatField()
+class AccountingEntryForm(forms.ModelForm):
+    class Meta:
+        model = AccountingEntry
+        exclude = ['updated_at', 'created_at']
