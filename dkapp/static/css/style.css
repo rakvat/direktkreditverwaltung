@@ -1,3 +1,23 @@
 a {
     color: green;
 }
+
+div.container {
+  max-width: 100%;
+}
+
+div.dkapp-form {
+  display: flex;
+  flex-flow: column;
+  max-width: 400px;
+  margin: 10px 0;
+
+}
+div.dkapp-form input {
+  margin-bottom: 20px;
+}
+
+table {
+  max-width: 100%;
+  font-size: smaller;
+}

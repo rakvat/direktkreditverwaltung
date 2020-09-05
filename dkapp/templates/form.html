@@ -4,7 +4,9 @@
 {% block content %}
 <form action={{ action_url }} method="post">
 {% csrf_token %}
-{{form}}
+<div class='dkapp-form'>
+    {{form.as_table}}
+</div>
 <button type="Submit">Speichern</button>
 </from>
 

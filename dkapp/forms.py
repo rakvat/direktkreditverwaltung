@@ -6,6 +6,10 @@ class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
         exclude = ['updated_at', 'created_at']
+        widgets = {
+            'email': forms.EmailInput(),
+            'remark': forms.Textarea(),
+        }
         labels = {
             "first_name": "Vorname",
             "last_name": "Nachname",
@@ -21,6 +25,5 @@ class ContactForm(forms.ModelForm):
 
 class ContractForm(forms.Form):
     number = forms.IntegerField()
-    # contact = forms.ForeignKey(Contact, on_delete=models.CASCADE)
     comment = forms.CharField(required=False)
     category = forms.ChoiceField(choices=[('Privat', 'Privat'), ('Syndikat', 'Syndikat'), ('Dritte', 'Dritte')])
