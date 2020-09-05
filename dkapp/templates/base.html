@@ -3,12 +3,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-    <title>{% block title %}Direktkreditverwaltung{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'vendor/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+  <script src="{% static 'vendor/js/bootstrap-native.min.js' %}" ></script>
+  <title>{% block title %}Direktkreditverwaltung{% endblock %}</title>
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'dkapp:index' %}">Start</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'dkapp:contacts' %}">Kontakte</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'dkapp:contracts' %}">Verträge</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Auswertungen
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'dkapp:contracts_interest' %}">Zinsen</a>
+            <a class="dropdown-item" href="{% url 'dkapp:contracts_interest_transfer_list' %}">Zinsüberweisungsliste</a>
+            <a class="dropdown-item" href="{% url 'dkapp:contracts_interest_average' %}">Durchschnittlicher Zinssatz</a>
+            <a class="dropdown-item" href="{% url 'dkapp:contracts_expiring' %}">Auslaufende Verträge</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
     <h1>Direktkreditverwaltung</h1>
     {% block content %}
     {% endblock %}
+  </div>
 </body>
 </html>
