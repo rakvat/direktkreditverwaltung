@@ -1,4 +1,9 @@
-<h1>Übersicht Kontakte</h1>
+{% extends "base.html" %}
+{% block title %}Kontakte{% endblock %}
+
+{% block content %}
+
+<h2>Übersicht Kontakte</h2>
 
 <a href="{% url 'dkapp:contacts_new' %}">Neuen Kontakt erstellen</a>
 
@@ -40,4 +45,4 @@
     <p>Du hast noch keine Kontakte eingetragen</p>
 {% endif %}
 
-
+{% endblock %}

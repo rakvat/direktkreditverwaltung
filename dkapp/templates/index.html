@@ -1,9 +1,5 @@
-{% load static %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-
-<h1>Direktkreditverwaltung</h1>
-
+{% extends "base.html" %}
+{% block content %}
 <h2>Datenbanken</h3>
 
 <h3>Personen</h3>
@@ -26,3 +22,4 @@
     <li><a href="{% url 'dkapp:contracts_interest_average' %}">Durchschnittlicher Zinssatz</a></li>
     <li><a href="{% url 'dkapp:contracts_expiring' %}">Auslaufende Verträge</a></li>
 </ul>
+{% endblock %}
