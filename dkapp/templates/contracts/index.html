@@ -36,7 +36,6 @@ Start, Laufzeit und Zinssatz sind aus der letzten Version des Vertrags.
     <th>Bemerkung</th>
     <th></th>
     <th></th>
-    <th></th>
   </tr>
 
   {% for contract in contracts %}
@@ -52,11 +51,6 @@ Start, Laufzeit und Zinssatz sind aus der letzten Version des Vertrags.
       <td>{{contract.comment}}</td>
       <td><a href="{% url 'dkapp:contract' contract.id %}">Anzeigen</a></td>
       <td><a href="{% url 'dkapp:contract_edit' contract.id %}">Editieren</a></td>
-      <td>
-        <a href="{% url 'dkapp:contract_accounting_entry_new' contract.id %}">Buchung erstellen</a>
-        <a href="{% url 'dkapp:contract_version_new' contract.id %}">Vertragsversion erstellen</a>
-        <a href="{% url 'dkapp:contract_accounting_entries' contract.id %}">Kontoauszug</a>
-      </td>
     </tr>
   {% endfor %}
 </table>

@@ -100,9 +100,40 @@ class ContractForm(forms.ModelForm):
 
 
 class ContractVersionForm(forms.ModelForm):
+    interest_rate_percent = forms.FloatField(
+        label="Zinssatz (Angabe in Prozent)"
+    )
+
     class Meta:
         model = ContractVersion
-        exclude = ['updated_at', 'created_at']
+        exclude = ['updated_at', 'created_at', 'interest_rate']
+        widgets = {
+            'start': forms.DateInput(format='%d.%m.%Y'),
+            'duration_months': forms.NumberInput(),
+            'duration_years': forms.NumberInput(),
+        }
+        labels = {
+            'start': "Start der Vertragsversion",
+            'duration_months': "Laufzeit in Monaten",
+            'duration_years': " * ODER * Laufzeit in Jahren",
+            'contract': "Vertrag",
+        }
+
+    def __init__(self, *args, **kwargs):
+        contract = kwargs.pop('contract')
+
+        super(ContractVersionForm, self).__init__(*args, **kwargs)
+        self.fields['start'].widget.attrs['placeholder'] = "DD.MM.YYYY"
+        self.fields['contract'].initial = contract
+        self.fields['version'].initial = contract.last_version.version + 1
+        if self.instance and self.instance.id:
+            self.fields['interest_rate_percent'].initial = self.instance.interest_rate * 100
+
+    def save(self, commit=True):
+        self.instance.interest_rate = self.cleaned_data['interest_rate_percent'] / 100.0
+
+        contract_version = super(ContractVersionForm, self).save(commit=commit)
+        return contract_version
 
 
 class AccountingEntryForm(forms.ModelForm):
