@@ -27,6 +27,9 @@ urlpatterns = [
     path('contracts_expiring/', views.ContractsView.expiring, name='contracts_expiring'),
 
     path('contract_versions/', views.ContractVersionsView.as_view(), name='contract_versions'),
+    path('contract_versions/<int:pk>/', views.ContractVersionView.as_view(), name='contract_version'),
+    path('contract_versions/<int:pk>/edit', views.ContractVersionView.edit, name='contract_version_edit'),
+    path('contract_versions/<int:pk>/delete', views.ContractVersionDeleteView.as_view(), name='contract_version_delete'),
 
     path('accounting_entries/', views.AccountingEntriesView.as_view(), name='accounting_entries'),
 ]

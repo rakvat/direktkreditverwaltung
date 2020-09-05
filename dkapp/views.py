@@ -164,7 +164,7 @@ class ContractVersionsView(generic.ListView):
     context_object_name = 'contract_versions'
 
     def get_queryset(self):
-        return ContractVersion.objects.order_by('start')
+        return ContractVersion.objects.order_by('contract_id', 'start')
 
     @staticmethod
     def new(request):
@@ -178,6 +178,40 @@ class ContractVersionsView(generic.ListView):
             return HttpResponseRedirect(reverse('dkapp:contract_version', args=(contract_version.id,)))
 
         return HttpResponseRedirect(reverse('dkapp:contacts'))
+
+
+class ContractVersionView(generic.DetailView):
+    model = ContractVersion
+    template_name = 'contract_versions/detail.html'
+
+    @staticmethod
+    def edit(request, *args, **kwargs):
+        contract_version_id = kwargs['pk']
+        contract_version = get_object_or_404(ContractVersion, pk=contract_version_id)
+        form = ContractVersionForm(instance=contract_version)
+        return render(request, 'form.html', {
+            'form': form,
+            'action_url': reverse('dkapp:contract_version', args=(contract_version.id,)),
+        })
+
+    def post(self, *args, **kwargs):
+        contract_version_id = kwargs['pk']
+        contract_version = get_object_or_404(ContractVersion, pk=contract_version_id)
+        form = ContractVersionForm(self.request.POST, instance=contract_version)
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect(reverse('dkapp:contract_version', args=(contract_version.id,)))
+
+
+class ContractVersionDeleteView(generic.edit.DeleteView):
+    template_name = 'object_confirm_delete.html'
+
+    def get_object(self, *args, **kwargs):
+        return get_object_or_404(ContractVersion, pk=self.kwargs['pk'])
+
+    def get_success_url(self):
+        return reverse('dkapp:contract_versions')
 
 
 class AccountingEntriesView(generic.ListView):

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Vertragsversionen{% endblock %}
+
+{% block content %}
+
+<h2>Übersicht Vertragsversionen</h2>
+
+<table class='table'>
+{% if contract_versions %}
+    <table class='table'>
+      <tr>
+        <th>Vertrag</th>
+        <th>Version</th>
+        <th>Start</th>
+        <th>Laufzeit in Monaten</th>
+        <th>Laufzeit in Jahren</th>
+        <th>Zinssatz</th>
+        <th></th>
+        <th></th>
+      </tr>
+
+      {% for contract_version in contract_versions %}
+          <tr>
+              <td>{{contract_version.contract}}</td>
+              <td>{{contract_version.version}}</td>
+              <td>{{contract_version.start | date:"SHORT_DATE_FORMAT"}}</td>
+              <td>{{contract_version.duration_months}}</td>
+              <td>{{contract_version.duration_years}}</td>
+              <td>{{contract_version.interest_rate | fraction }}</td>
+              <td><a href="{% url 'dkapp:contract_version' contract_version.id %}">Anzeigen</a></td>
+              <td><a href="{% url 'dkapp:contract_version_edit' contract_version.id %}">Editieren</a></td>
+          </tr>
+      {% endfor %}
+    </table>
+{% else %}
+    <p>Keine Vertragsversion vorhanden. Das ist ein Bug. Beim Erstellen des Vertrags sollte die erste Version erstellt werden.</p>
+{% endif %}
+
+{% endblock %}
