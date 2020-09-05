@@ -51,10 +51,14 @@
 </div>
 
 <div>
-    <a href="{% url 'dkapp:contact_edit' contact.id %}">Editieren</a></br>
-    <a href="{% url 'dkapp:contact_delete' contact.id %}">Löschen</a></br>
-    <a href="{% url 'dkapp:contracts' %}?contact_id={{ contact.id | urlencode}}">Direktkreditverträge</a></br>
-    <hr/>
+    <a href="{% url 'dkapp:contract_edit' contract.id %}">Editieren</a></br>
+    <a href="{% url 'dkapp:contract_delete' contract.id %}">Löschen</a></br>
+
+      <td><%= link_to 'Buchung erstellen', new_contract_accounting_entry_path(contract) %>
+          <%= link_to 'Vertragsversion erstellen', new_contract_contract_version_path(contract) %>
+          <%= link_to 'Kontoauszug', contract_accounting_entries_path(contract) %></td>
+
+    <hr>
     <a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>
 </div>
 {% endblock %}

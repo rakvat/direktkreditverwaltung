@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 
@@ -15,6 +16,10 @@ class Contact(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        return self.full_name
+
+    @property
+    def full_name(self):
         return f"{self.last_name}, {self.first_name}"
 
 
@@ -30,6 +35,16 @@ class Contract(models.Model):
     category = models.CharField(max_length=200, choices=Category.choices)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def balance(self, date=None):
+        """Account balance for given date"""
+        date = date or timezone.now()
+        return self.accountingentry_set.filter(date__lte=date).aggregate(models.Sum('amount'))['amount__sum']
+
+    @property
+    def last_version(self):
+        return self.contractversion_set.order_by('start').last()
 
 
 class ContractVersion(models.Model):

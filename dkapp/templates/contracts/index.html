@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Direktkreditverträge{% endblock %}
+
+{% block content %}
+
+{% if contact %}
+<h2>Übersicht Direktkreditverträge von {{contact.full_name}}</h2>
+{% else %}
+<h2>Übersicht Direktkreditverträge</h2>
+{% endif %}
+
+<p>
+Start, Laufzeit und Zinssatz sind aus der letzten Version des Vertrags.
+</p>
+
+<p>
+<a href="{% url 'dkapp:contracts_new' %}">Neuen Vertrag erstellen</a>
+</p>
+
+{% if contracts %}
+<table class='table'>
+  <tr>
+    <th>Nummer</th>
+    <th>Kontakt</th>
+    <th>Kontostand</th>
+    <th>Start</th>
+    <th>Laufzeit in Monaten</th>
+    <th>Laufzeit in Jahren</th>
+    <th>Zinssatz</th>
+    <th>Typ</th>
+    <th>Bemerkung</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  {% for contract in contracts %}
+    <tr>
+      <td>{{contract.number}}</td>
+      <td>{{contract.contact.full_name}}</td>
+      <td>{{contract.balance | euro}}</td>
+      <td>{{contract.last_version.start | date:"SHORT_DATE_FORMAT"}}</td>
+      <td>{{contract.last_version.duration_months | default_if_none:'-'}}</td>
+      <td>{{contract.last_version.duration_years | default_if_none:'-'}}</td>
+      <td>{{contract.last_version.interest_rate | faction}}</td>
+      <td>{{contract.category}}</td>
+      <td>{{contract.comment}}</td>
+      <td><a href="{% url 'dkapp:contract' contract.id %}">Anzeigen</a></td>
+      <td><a href="{% url 'dkapp:contract_edit' contract.id %}">Editieren</a></td>
+      <td>
+        <a href="{% url 'dkapp:contract_accounting_entry_new' contract.id %}">Buchung erstellen</a>
+        <a href="{% url 'dkapp:contract_version_new' contract.id %}">Vertragsversion erstellen</a>
+        <a href="{% url 'dkapp:contract_accounting_entries' contract.id %}">Kontoauszug</a>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+{% else %}
+    <p>Noch kein Vertrag vorhanden.</p>
+{% endif %}
+
+
+{% endblock %}

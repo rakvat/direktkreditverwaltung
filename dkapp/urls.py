@@ -12,7 +12,15 @@ urlpatterns = [
     path('contacts/<int:pk>/edit', views.ContactView.edit, name='contact_edit'),
     path('contacts/<int:pk>/delete', views.ContactDeleteView.as_view(), name='contact_delete'),
 
-    path('contracts/', views.ContractsView.as_view(), name='contracts'),
+    path('contracts', views.ContractsView.as_view(), name='contracts'),
+    path('contracts/new/', views.ContractsView.new, name='contracts_new'),
+    path('contracts/<int:pk>/', views.ContractView.as_view(), name='contract'),
+    path('contracts/<int:pk>/edit', views.ContractView.edit, name='contract_edit'),
+    path('contracts/<int:pk>/delete', views.ContractDeleteView.as_view(), name='contract_delete'),
+    path('contracts/<int:pk>/version_new', views.ContractVersionsView.new, name='contract_version_new'),
+    path('contracts/<int:pk>/accounting_entry_new', views.AccountingEntriesView.new, name='contract_accounting_entry_new'),
+    path('contracts/<int:pk>/accounting_entries', views.AccountingEntriesView.as_view(), name='contract_accounting_entries'),
+
     path('contracts_interest/', views.ContractsView.interest, name='contracts_interest'),
     path('contracts_interest_transfer_list/', views.ContractsView.interest_transfer_list, name='contracts_interest_transfer_list'),
     path('contracts_interest_average/', views.ContractsView.interest_average, name='contracts_interest_average'),
