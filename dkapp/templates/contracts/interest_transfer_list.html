@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Zinsüberweisungsliste{% endblock %}
+
+{% block content %}
+
+<h2>Überweisungsliste der Zinsen für das Jahr {{current_year}}</h2>
+
+<h4>Jahr</h4>
+
+<form action="{% url 'dkapp:contracts_interest_transfer_list' %}" method="post">
+  {% csrf_token %}
+  <select name='year'>
+    {% for year in all_years %}
+      {% if year == current_year %}
+        <option value={{year}} selected>{{year}}</option>
+      {% else %}
+        <option value={{year}}>{{year}}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
+  <input class="btn btn-success" type="submit" value="Anzeigen">
+</from>
+
+<br/>
+
+{% for data in report.per_contract_data %}
+<div class="mb-3">
+  <h3>Direktkreditvertrag Nr. {{data.contract.number}}, {{data.contact}}</h3>
+  <b>Zinsen {{current_year}}: {{ data.interest|euro }}</b><br/>
+  <b>IBAN: </b>{{data.contact.iban}}<br/>
+  <b>BIC: </b>{{data.contact.bic}}<br/>
+  <b>Bank: </b>{{data.contact.bank_name}}<br/>
+</div>
+{% endfor %}
+
+<br/>
+<h:>Summe Zinsen</h2>
+<b>{{ report.sum_interest | euro }}</b>
+
+{% endblock %}

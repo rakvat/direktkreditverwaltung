@@ -8,7 +8,10 @@ from django.views import generic
 
 from dkapp.models import Contact, Contract, ContractVersion, AccountingEntry
 from dkapp.forms import ContactForm, ContractForm, ContractVersionForm, AccountingEntryForm
-from dkapp.operations.reports import AverageInterestRateReport
+from dkapp.operations.reports import (
+    AverageInterestRateReport,
+    InterestTransferListReport,
+)
 
 
 class IndexView(generic.TemplateView):
@@ -110,8 +113,24 @@ class ContractsView(generic.ListView):
     def interest(self):
         pass
 
-    def interest_transfer_list(self):
-        pass
+
+class ContractsInterestTransferListView(generic.TemplateView):
+    template_name = 'contracts/interest_transfer_list.html'
+
+    def get(self, request):
+        this_year = datetime.now().year
+        year = int(request.GET.get('year') or this_year)
+        return render(request, self.template_name, {
+            'current_year': year,
+            'all_years': list(range(this_year, this_year-10, -1)),
+            'report': InterestTransferListReport.create(year),
+        })
+
+    def post(self, request):
+        year = request.POST.get('year')
+        return HttpResponseRedirect(
+            reverse('dkapp:contracts_interest_transfer_list') + f"?year={year}"
+        )
 
 
 class ContractsAverageInterestView(generic.TemplateView):

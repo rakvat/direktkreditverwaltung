@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from dkapp.models import Contract, AccountingEntry
+from dkapp.models import Contact, Contract, AccountingEntry
+from dkapp.operations.interest import Interest
 
 
 @dataclass
-class PerContractData:
+class FractionPerContract:
     contract: Contract
     balance: float
     fraction_credit: float
@@ -15,7 +16,7 @@ class AverageInterestRateReport:
     def __init__(self, contracts, sum_credit):
         self.sum_credit = sum_credit
         self.per_contract_data = [
-            PerContractData(
+            FractionPerContract(
                 contract=contract,
                 balance=balance,
                 fraction_credit=(fraction:=balance/sum_credit),
@@ -27,7 +28,32 @@ class AverageInterestRateReport:
 
     @classmethod
     def create(cls):
-        all_contracts = Contract.objects.all()
+        all_contracts = Contract.objects.order_by('number')
         assert AccountingEntry.total_sum() == Contract.total_sum()
         sum_credit = AccountingEntry.total_sum()
         return cls(contracts=all_contracts, sum_credit=sum_credit)
+
+
+@dataclass
+class InterestPerContract:
+    contract: Contract
+    contact: Contact
+    interest: float
+
+
+class InterestTransferListReport:
+    def __init__(self, year, contracts):
+        self.per_contract_data = [
+            InterestPerContract(
+                contract=contract,
+                contact=contract.contact,
+                interest=interest,
+            ) for contract in contracts
+            if (interest:=Interest(contract, year).calculate()) > 0
+        ]
+        self.sum_interest = sum([data.interest for data in self.per_contract_data])
+
+    @classmethod
+    def create(cls, year):
+        all_contracts = Contract.objects.order_by('number').prefetch_related('contact')
+        return cls(year, contracts=all_contracts)
