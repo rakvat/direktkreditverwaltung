@@ -77,3 +77,7 @@ class AccountingEntry(models.Model):
 
     def __str__(self):
         return f"Buchung {self.id} vom {self.date} in {self.contract}"
+
+    @property
+    def type(self):
+        return "Einzahlung" if self.amount >= 0 else "Auszahlung"

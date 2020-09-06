@@ -237,3 +237,37 @@ class AccountingEntriesView(generic.ListView):
             return HttpResponseRedirect(reverse('dkapp:accounting_entry', args=(accounting_entry.id,)))
 
         return HttpResponseRedirect(reverse('dkapp:accounting_entries'))
+
+
+class AccountingEntryView(generic.DetailView):
+    model = AccountingEntry
+    template_name = 'accounting_entries/detail.html'
+
+    @staticmethod
+    def edit(request, *args, **kwargs):
+        accounting_entry_id = kwargs['pk']
+        accounting_entry = get_object_or_404(AccountingEntry, pk=accounting_entry_id)
+        form = AccountingEntryForm(instance=accounting_entry)
+        return render(request, 'form.html', {
+            'form': form,
+            'action_url': reverse('dkapp:accounting_entry', args=(accounting_entry.id,)),
+        })
+
+    def post(self, *args, **kwargs):
+        accounting_entry_id = kwargs['pk']
+        accounting_entry = get_object_or_404(AccountingEntry, pk=accounting_entry_id)
+        form = AccountingEntryForm(self.request.POST, instance=accounting_entry)
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect(reverse('dkapp:accounting_entry', args=(accounting_entry.id,)))
+
+
+class AccountingEntryDeleteView(generic.edit.DeleteView):
+    template_name = 'object_confirm_delete.html'
+
+    def get_object(self, *args, **kwargs):
+        return get_object_or_404(AccountingEntry, pk=self.kwargs['pk'])
+
+    def get_success_url(self):
+        return reverse('dkapp:accounting_entries')

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Buchungen{% endblock %}
+
+{% block content %}
+
+<h2>Übersicht Buchungen</h2>
+
+<table class='table'>
+{% if accounting_entries %}
+    <table class='table'>
+      <tr>
+        <th>Vorgang</th>
+        <th>Datum</th>
+        <th>Betrag</th>
+        <th>Vertrag</th>
+        <th></th>
+        <th></th>
+      </tr>
+
+      {% for accounting_entry in accounting_entries %}
+          <tr>
+              <td>{{accounting_entry.type}}</td>
+              <td>{{accounting_entry.date | date:"SHORT_DATE_FORMAT"}}</td>
+              <td>{{accounting_entry.amount | euro}}</td>
+              <td><a href="{% url 'dkapp:contract' accounting_entry.contract.id %}">{{accounting_entry.contract}}</a></td>
+              <td><a href="{% url 'dkapp:accounting_entry' accounting_entry.id %}">Anzeigen</a></td>
+              <td><a href="{% url 'dkapp:accounting_entry_edit' accounting_entry.id %}">Editieren</a></td>
+          </tr>
+      {% endfor %}
+    </table>
+{% else %}
+    <p>Keine Buchungen vorhanden.</p>
+{% endif %}
+
+{% endblock %}

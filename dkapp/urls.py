@@ -32,4 +32,7 @@ urlpatterns = [
     path('contract_versions/<int:pk>/delete', views.ContractVersionDeleteView.as_view(), name='contract_version_delete'),
 
     path('accounting_entries/', views.AccountingEntriesView.as_view(), name='accounting_entries'),
+    path('accounting_entries/<int:pk>', views.AccountingEntryView.as_view(), name='accounting_entry'),
+    path('accounting_entries/<int:pk>/edit', views.AccountingEntryView.edit, name='accounting_entry_edit'),
+    path('accounting_entries/<int:pk>/delete', views.AccountingEntryDeleteView.as_view(), name='accounting_entry_delete'),
 ]

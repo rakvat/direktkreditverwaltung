@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Vertragsversion {{contract_version.id}}{% endblock %}
+
+{% block content %}
+
+{% if error_message %}<div><strong>{{ error_message }}</strong></div>{% endif %}
+
+<div>
+  <b>Vertrag:</b>
+  {{contractversion.contract}}
+</div>
+
+<div>
+  <b>Versionsnummer:</b>
+  {{contractversion.version}}
+</div>
+
+<div>
+  <b>Start:</b>
+  {{contractversion.start | date:"SHORT_DATE_FORMAT"}}
+</div>
+
+<div>
+  <b>Laufzeit in Monaten:</b>
+  {{contractversion.duration_months | default_if_none:'-'}}
+</div>
+
+<div>
+  <b>Laufzeit in Jahren:</b>
+  {{contractversion.duration_years | default_if_none:'-'}}
+</div>
+
+<div>
+  <b>Zinssatz:</b>
+  {{contractversion.interest_rate | fraction}}
+</div>
+
+
+<br/>
+<div>
+    <a href="{% url 'dkapp:contract_version_edit' contractversion.id %}">Editieren</a><br/>
+    <a href="{% url 'dkapp:contract_version_delete' contractversion.id %}">Löschen</a><br/>
+
+    <hr>
+    <a href="{% url 'dkapp:contract_versions' %}">Alle Vertragsversionen</a><br/>
+    <a href="{% url 'dkapp:contracts' %}">Alle Verträge</a><br/>
+    <a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>
+</div>
+{% endblock %}
