@@ -45,7 +45,7 @@ class Contract(models.Model):
     def balance(self, date=None):
         """Account balance for given date"""
         date = date or timezone.now()
-        return self.accountingentry_set .filter(
+        return self.accountingentry_set.filter(
             date__lte=date
         ).aggregate(
             models.Sum('amount')
@@ -59,6 +59,11 @@ class Contract(models.Model):
     def expiring(self):
         last_version = self.last_version
         return last_version.start + relativedelta(months=last_version.duration_months or 0) + relativedelta(years=last_version.duration_years or 0)
+
+    @classmethod
+    def total_sum(cls):
+        contracts = cls.objects.all()
+        return sum([contract.balance for contract in contracts])
 
 
 class ContractVersion(models.Model):
@@ -88,3 +93,7 @@ class AccountingEntry(models.Model):
     @property
     def type(self):
         return "Einzahlung" if self.amount >= 0 else "Auszahlung"
+
+    @classmethod
+    def total_sum(cls):
+        return cls.objects.aggregate(models.Sum('amount'))['amount__sum'] or 0

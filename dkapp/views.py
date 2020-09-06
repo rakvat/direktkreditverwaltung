@@ -6,8 +6,9 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
-from .models import Contact, Contract, ContractVersion, AccountingEntry
-from .forms import ContactForm, ContractForm, ContractVersionForm, AccountingEntryForm
+from dkapp.models import Contact, Contract, ContractVersion, AccountingEntry
+from dkapp.forms import ContactForm, ContractForm, ContractVersionForm, AccountingEntryForm
+from dkapp.operations.reports import AverageInterestRateReport
 
 
 class IndexView(generic.TemplateView):
@@ -112,8 +113,14 @@ class ContractsView(generic.ListView):
     def interest_transfer_list(self):
         pass
 
-    def interest_average(self):
-        pass
+
+class ContractsAverageInterestView(generic.TemplateView):
+    template_name = 'contracts/average_interest.html'
+
+    def get(self, request):
+        return render(request, self.template_name, {
+            'report': AverageInterestRateReport.create(),
+        })
 
 
 class ContractsExpiringView(generic.ListView):

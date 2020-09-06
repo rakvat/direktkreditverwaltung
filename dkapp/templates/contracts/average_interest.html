@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Durchschnittlicher Zinssatz{% endblock %}
+
+{% block content %}
+
+<h2>Berechnung des durchschnittlichen Zinssatz</h2>
+
+<h3>Aktuelle Summe aller Direktkredite: {{ report.sum_credit | euro }}</h3>
+
+<h3>Durchschnittlicher Zinssatz: {{report.avg_interest_rate | fraction}}</h3>
+
+<h3>Berechnung: </h3>
+<table class='table table-striped'>
+<tr>
+  <th>Vertrag</th>
+  <th>Kontostand</th>
+  <th>Anteil an Gesamtsumme</th>
+  <th>Zinssatz</th>
+  <th>Relativer Zinssatz</th>
+</tr>
+
+
+{% for data in report.per_contract_data %}
+  {% with last_version=data.contract.last_version %}
+    <tr>
+      <td>{{ data.contract }}</td>
+      <td>{{ data.balance | euro }}</td>
+      <td>{{ data.fraction_credit | fraction }}</td>
+      <td>{{ data.interest_rate | fraction }}</td>
+      <td>{{ data.relative_interest_rate | fraction }}</td>
+    </tr>
+  {% endwith %}
+{% endfor %}
+</table>
+<br/>
+
+{% endblock %}
