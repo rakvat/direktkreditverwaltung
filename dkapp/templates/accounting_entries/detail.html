@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load my_filters %}
-{% block title %}Vertragsversion {{contract_version.id}}{% endblock %}
+{% block title %}Buchung: {{accountingentry.id}}{% endblock %}
 
 {% block content %}
 
@@ -8,41 +8,33 @@
 
 <div>
   <b>Vertrag:</b>
-  {{contractversion.contract}}
+  <a href="{% url 'dkapp:contract' accountingentry.contract.id %}">
+    {{accountingentry.contract}}
+  </a>
 </div>
 
 <div>
-  <b>Versionsnummer:</b>
-  {{contractversion.version}}
+  <b>Vorgang:</b>
+  {{accountingentry.type}}
 </div>
 
 <div>
-  <b>Start:</b>
-  {{contractversion.start | date:"SHORT_DATE_FORMAT"}}
+  <b>Datum:</b>
+  {{accountingentry.date | date:"SHORT_DATE_FORMAT"}}
 </div>
 
 <div>
-  <b>Laufzeit in Monaten:</b>
-  {{contractversion.duration_months | default_if_none:'-'}}
+  <b>Betrag:</b>
+  {{accountingentry.amount | euro}}
 </div>
-
-<div>
-  <b>Laufzeit in Jahren:</b>
-  {{contractversion.duration_years | default_if_none:'-'}}
-</div>
-
-<div>
-  <b>Zinssatz:</b>
-  {{contractversion.interest_rate | fraction}}
-</div>
-
 
 <br/>
 <div>
-    <a href="{% url 'dkapp:contract_version_edit' contractversion.id %}">Editieren</a><br/>
-    <a href="{% url 'dkapp:contract_version_delete' contractversion.id %}">Löschen</a><br/>
+    <a href="{% url 'dkapp:accounting_entry_edit' accountingentry.id %}">Editieren</a><br/>
+    <a href="{% url 'dkapp:accounting_entry_delete' accountingentry.id %}">Löschen</a><br/>
 
     <hr>
+    <a href="{% url 'dkapp:accounting_entries' %}">Alle Buchungen</a><br/>
     <a href="{% url 'dkapp:contract_versions' %}">Alle Vertragsversionen</a><br/>
     <a href="{% url 'dkapp:contracts' %}">Alle Verträge</a><br/>
     <a href="{% url 'dkapp:contacts' %}">Alle Kontakte</a>
