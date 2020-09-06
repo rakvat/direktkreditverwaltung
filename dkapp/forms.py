@@ -140,3 +140,19 @@ class AccountingEntryForm(forms.ModelForm):
     class Meta:
         model = AccountingEntry
         exclude = ['updated_at', 'created_at']
+        widgets = {
+            'date': forms.DateInput(format='%d.%m.%Y'),
+            'amount': forms.NumberInput(),
+        }
+        labels = {
+            'contract': 'Vertrag',
+            'date': 'Datum',
+            'amount': 'Betrag (in Euro, Cents mit . abgetrennt)',
+        }
+
+    def __init__(self, *args, **kwargs):
+        contract = kwargs.pop('contract')
+
+        super(AccountingEntryForm, self).__init__(*args, **kwargs)
+        self.fields['date'].widget.attrs['placeholder'] = "DD.MM.YYYY"
+        self.fields['contract'].initial = contract

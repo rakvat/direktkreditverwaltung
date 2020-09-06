@@ -61,7 +61,7 @@ Start, Laufzeit und Zinssatz der <i>letzen Version</i> des Vertrags
     <a href="{% url 'dkapp:contract_delete' contract.id %}">Löschen</a><br/>
     <a href="{% url 'dkapp:contract_accounting_entry_new' contract.id %}">Buchung erstellen</a><br/>
     <a href="{% url 'dkapp:contract_version_new' contract.id %}">Vertragsversion erstellen</a><br/>
-    <a href="{% url 'dkapp:contract_accounting_entries' contract.id %}">Kontoauszug</a><br/>
+    <a href="{% url 'dkapp:accounting_entries' %}?contract_id={{contract.id}}">Kontoauszug</a><br/>
 
     <hr>
     <a href="{% url 'dkapp:contracts' %}">Alle Verträge</a><br/>

@@ -222,16 +222,23 @@ class AccountingEntriesView(generic.ListView):
     template_name = 'accounting_entries/index.html'
     context_object_name = 'accounting_entries'
 
-    def get_queryset(self):
+    def get_queryset(self, *args, **kwargs):
+        contract_id = self.request.GET.get('contract_id')
+        if contract_id is not None:
+            return AccountingEntry.objects.filter(contract_id=contract_id).order_by('date')
         return AccountingEntry.objects.order_by('date')
 
     @staticmethod
-    def new(request):
-        form = AccountingEntryForm()
+    def new(request, *args, **kwargs):
+        contract_id = kwargs['pk']
+        contract = get_object_or_404(Contract, pk=contract_id)
+        form = AccountingEntryForm(contract=contract)
         return render(request, 'form.html', {'form': form, 'action_url': reverse('dkapp:accounting_entries')})
 
     def post(self, request):
-        form = AccountingEntryForm(request.POST)
+        contract_id = request.POST.get('contract')
+        contract = get_object_or_404(Contract, pk=contract_id)
+        form = AccountingEntryForm(request.POST, contract=contract)
         if form.is_valid():
             accounting_entry = form.save()
             return HttpResponseRedirect(reverse('dkapp:accounting_entry', args=(accounting_entry.id,)))
@@ -247,7 +254,7 @@ class AccountingEntryView(generic.DetailView):
     def edit(request, *args, **kwargs):
         accounting_entry_id = kwargs['pk']
         accounting_entry = get_object_or_404(AccountingEntry, pk=accounting_entry_id)
-        form = AccountingEntryForm(instance=accounting_entry)
+        form = AccountingEntryForm(instance=accounting_entry, contract=accounting_entry.contract)
         return render(request, 'form.html', {
             'form': form,
             'action_url': reverse('dkapp:accounting_entry', args=(accounting_entry.id,)),
@@ -256,7 +263,11 @@ class AccountingEntryView(generic.DetailView):
     def post(self, *args, **kwargs):
         accounting_entry_id = kwargs['pk']
         accounting_entry = get_object_or_404(AccountingEntry, pk=accounting_entry_id)
-        form = AccountingEntryForm(self.request.POST, instance=accounting_entry)
+        form = AccountingEntryForm(
+            self.request.POST,
+            instance=accounting_entry,
+            contract=accounting_entry.contract,
+        )
         if form.is_valid():
             form.save()
 

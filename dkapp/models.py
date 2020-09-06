@@ -76,7 +76,7 @@ class AccountingEntry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Buchung {self.id} vom {self.date} in {self.contract}"
+        return f"Buchung {self.id} vom {self.date.strftime('%d.%m.%Y')} in {self.contract}"
 
     @property
     def type(self):
