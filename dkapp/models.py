@@ -1,3 +1,5 @@
+from dateutil.relativedelta import relativedelta
+
 from django.utils import timezone
 from django.db import models
 
@@ -37,7 +39,7 @@ class Contract(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Direktkreditvertrag {self.number} von {self.contact.full_name}"
+        return f"Direktkreditvertrag {self.number} von {self.contact}"
 
     @property
     def balance(self, date=None):
@@ -52,6 +54,11 @@ class Contract(models.Model):
     @property
     def last_version(self):
         return self.contractversion_set.order_by('start').last()
+
+    @property
+    def expiring(self):
+        last_version = self.last_version
+        return last_version.start + relativedelta(months=last_version.duration_months or 0) + relativedelta(years=last_version.duration_years or 0)
 
 
 class ContractVersion(models.Model):

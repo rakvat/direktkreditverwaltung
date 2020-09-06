@@ -23,7 +23,7 @@ urlpatterns = [
     path('contracts_interest/', views.ContractsView.interest, name='contracts_interest'),
     path('contracts_interest_transfer_list/', views.ContractsView.interest_transfer_list, name='contracts_interest_transfer_list'),
     path('contracts_interest_average/', views.ContractsView.interest_average, name='contracts_interest_average'),
-    path('contracts_expiring/', views.ContractsView.expiring, name='contracts_expiring'),
+    path('contracts_expiring/', views.ContractsExpiringView.as_view(), name='contracts_expiring'),
 
     path('contract_versions/', views.ContractVersionsView.as_view(), name='contract_versions'),
     path('contract_versions/<int:pk>/', views.ContractVersionView.as_view(), name='contract_version'),

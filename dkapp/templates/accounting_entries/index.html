@@ -21,14 +21,14 @@
       {% endif %}
     {% endfor %}
   </select>
-  <input type="submit" value="Filtern">
+  <input class="btn btn-success" type="submit" value="Filtern">
 </form>
 
 <form action="{% url 'dkapp:accounting_entries_filter' %}" method="post">
   {% csrf_token %}
   <label>Jahr</label>
   <input type="number" placeholder="YYYY" name="year" value="{{year}}"/>
-  <input type="submit" value="Filtern">
+  <input class="btn btn-success" type="submit" value="Filtern">
 </form>
 
 <form action="{% url 'dkapp:accounting_entries_filter' %}" method="post">
@@ -37,7 +37,7 @@
   <input type="text" placeholder="DD.MM.YYYY" name="from" value="{{from}}"/>
   <label>Bis</label>
   <input type="text" placeholder="DD.MM.YYYY" name="to" value="{{to}}"/>
-  <input type="submit" value="Filtern">
+  <input class="btn btn-success" type="submit" value="Filtern">
 </form>
 
 <br/>

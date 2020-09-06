@@ -1,4 +1,5 @@
 import urllib
+from operator import attrgetter
 from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -114,8 +115,16 @@ class ContractsView(generic.ListView):
     def interest_average(self):
         pass
 
-    def expiring(self):
-        pass
+
+class ContractsExpiringView(generic.ListView):
+    template_name = 'contracts/expiring.html'
+    context_object_name = 'contracts'
+
+    def get_queryset(self):
+        contracts = Contract.objects.order_by('created_at')
+        # this could be done in SQL to avoid n+1 queries but I'll go for fast
+        # dev speed here
+        return sorted(filter(lambda c: c.balance > 0, contracts), key=attrgetter('expiring'))
 
 
 class ContractView(generic.DetailView):

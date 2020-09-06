@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Direktkreditverträge{% endblock %}
+
+{% block content %}
+
+<h2>Übersicht Direktkreditverträge, sortiert nach Ablaufdatum</h2>
+
+<p>
+Die Angaben von Start, Laufzeit und Zinssatz beziehen sich auf die letzte Version der Verträge.
+Verträge mit Kontostand 0 werden nicht angezeigt.
+</p>
+
+{% if contracts %}
+<table class='table'>
+  <tr>
+    <th>Ablaufdatum</th>
+    <th>Nummer</th>
+    <th>Kontakt</th>
+    <th>Start</th>
+    <th>Laufzeit in Monaten</th>
+    <th>Laufzeit in Jahren</th>
+    <th>Zinssatz</th>
+    <th>Kontostand</th>
+    <th></th>
+  </tr>
+
+{% for contract in contracts %}
+  {% with last_version=contract.last_version %}
+  <tr>
+    <td>{{ contract.expiring | date:"SHORT_DATE_FORMAT"  }}</td>
+    <td>{{ contract.number }}</td>
+    <td>{{ contract }}</td>
+    <td>{{ last_version.start | date:"SHORT_DATE_FORMAT" }}</td>
+    <td>{{ last_version.duration_months | default_if_none:'-'}}</td>
+    <td>{{ last_version.duration_years | default_if_none:'-'}}</td>
+    <td>{{ last_version.interest_rate | fraction }}</td>
+    <td>{{ contract.balance | euro }}</td>
+    <td><a href="{% url 'dkapp:contract' contract.id %}">Anzeigen</a></td>
+  </tr>
+  {% endwith %}
+{% endfor %}
+</table>
+{% else %}
+    <p>Noch kein Vertrag vorhanden.</p>
+{% endif %}
+
+{% endblock %}
