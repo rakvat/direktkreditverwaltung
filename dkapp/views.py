@@ -1,3 +1,5 @@
+import urllib
+from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -226,7 +228,34 @@ class AccountingEntriesView(generic.ListView):
         contract_id = self.request.GET.get('contract_id')
         if contract_id is not None:
             return AccountingEntry.objects.filter(contract_id=contract_id).order_by('date')
+        year = self.request.GET.get('year')
+        if year is not None:
+            return AccountingEntry.objects.filter(date__year=year).order_by('date')
+        from_date = self.request.GET.get('from')
+        to_date = self.request.GET.get('to')
+        if from_date and to_date is not None:
+            return AccountingEntry.objects.filter(
+                date__gte=datetime.strptime(from_date, "%d.%m.%Y"),
+                date__lte=datetime.strptime(to_date, "%d.%m.%Y"),
+            ).order_by('date')
         return AccountingEntry.objects.order_by('date')
+
+    def get_context_data(self, **kwargs):
+        context = super(AccountingEntriesView, self).get_context_data(**kwargs)
+        all_contracts = Contract.objects.order_by('number').all()
+        context['all_contracts'] = all_contracts
+        contract_id = self.request.GET.get('contract_id')
+        if contract_id:
+            context['contract_id'] = int(contract_id)
+        year = self.request.GET.get('year')
+        if year:
+            context['year'] = year
+        from_date = self.request.GET.get('from')
+        to_date = self.request.GET.get('to')
+        if from_date and to_date:
+            context['from'] = from_date
+            context['to'] = to_date
+        return context
 
     @staticmethod
     def new(request, *args, **kwargs):
@@ -234,6 +263,23 @@ class AccountingEntriesView(generic.ListView):
         contract = get_object_or_404(Contract, pk=contract_id)
         form = AccountingEntryForm(contract=contract)
         return render(request, 'form.html', {'form': form, 'action_url': reverse('dkapp:accounting_entries')})
+
+    @staticmethod
+    def filter(request):
+        filter_args = {}
+        contract_id = request.POST.get('contract_id')
+        if contract_id:
+            filter_args['contract_id'] = contract_id
+        year = request.POST.get('year')
+        if year:
+            filter_args['year'] = year
+        from_date = request.POST.get('from')
+        to_date = request.POST.get('to')
+        if from_date and to_date:
+            filter_args['from'] = from_date
+            filter_args['to'] = to_date
+        filter_query_string = urllib.parse.urlencode(filter_args)
+        return HttpResponseRedirect("?".join([reverse('dkapp:accounting_entries'), filter_query_string]))
 
     def post(self, request):
         contract_id = request.POST.get('contract')

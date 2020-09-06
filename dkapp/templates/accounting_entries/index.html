@@ -6,6 +6,43 @@
 
 <h2>Übersicht Buchungen</h2>
 
+<h3>Filter</h3>
+
+<form action="{% url 'dkapp:accounting_entries_filter' %}" method="post">
+  {% csrf_token %}
+  <label>Vertrag</label>
+  <select name='contract_id'>
+    <option value="">Vertrag wählen</option>
+    {% for contract in all_contracts %}
+      {% if contract_id == contract.id %}
+        <option value={{contract.id}} selected>{{contract}}</option>
+      {% else %}
+        <option value={{contract.id}}>{{contract}}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
+  <input type="submit" value="Filtern">
+</form>
+
+<form action="{% url 'dkapp:accounting_entries_filter' %}" method="post">
+  {% csrf_token %}
+  <label>Jahr</label>
+  <input type="number" placeholder="YYYY" name="year" value="{{year}}"/>
+  <input type="submit" value="Filtern">
+</form>
+
+<form action="{% url 'dkapp:accounting_entries_filter' %}" method="post">
+  {% csrf_token %}
+  <label>Von</label>
+  <input type="text" placeholder="DD.MM.YYYY" name="from" value="{{from}}"/>
+  <label>Bis</label>
+  <input type="text" placeholder="DD.MM.YYYY" name="to" value="{{to}}"/>
+  <input type="submit" value="Filtern">
+</form>
+
+<br/>
+
+<h3>Buchungen</h3>
 <table class='table'>
 {% if accounting_entries %}
     <table class='table'>
@@ -32,9 +69,5 @@
 {% else %}
     <p>Keine Buchungen vorhanden.</p>
 {% endif %}
-
-<p>
-TODO filter
-</p>
 
 {% endblock %}
