@@ -110,8 +110,36 @@ class ContractsView(generic.ListView):
 
         return HttpResponseRedirect(reverse('dkapp:contracts'))
 
-    def interest(self):
-        pass
+
+class ContractsInterest(generic.TemplateView):
+    template_name = 'contracts/interest.html'
+    OUTPUT_FORMATS = {
+        'html': 'HTML',
+        'overview': 'PDF-Übersicht',
+        'thanks': 'PDF-Dankesbriefe',
+        'interest_letter': 'PDF-Zinsbriefe',
+    }
+
+    def get(self, request):
+        this_year = datetime.now().year
+        year = int(request.GET.get('year') or this_year)
+        format = request.GET.get('format')
+        return render(request, self.template_name, {
+            'today': datetime.now().strftime('%d.%m.%Y'),
+            'current_year': year,
+            'current_format': format,
+            'all_years': list(range(this_year, this_year-10, -1)),
+            'all_formats': self.OUTPUT_FORMATS,
+            'report': InterestTransferListReport.create(year),
+        })
+
+    @staticmethod
+    def filter(request):
+        year = request.POST.get('year') or datetime.now().year
+        format = request.POST.get('format') or 'html'
+        filter_args = {'year': year, 'format': format}
+        filter_query_string = urllib.parse.urlencode(filter_args)
+        return HttpResponseRedirect("?".join([reverse('dkapp:contracts_interest'), filter_query_string]))
 
 
 class ContractsInterestTransferListView(generic.TemplateView):

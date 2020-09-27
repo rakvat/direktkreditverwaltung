@@ -1,6 +1,7 @@
+from typing import List
 from dataclasses import dataclass
 from dkapp.models import Contact, Contract, AccountingEntry
-from dkapp.operations.interest import InterestProcessor
+from dkapp.operations.interest import InterestProcessor, InterestDataRow
 
 
 @dataclass
@@ -39,6 +40,7 @@ class InterestPerContract:
     contract: Contract
     contact: Contact
     interest: float
+    interest_rows: List[InterestDataRow]
 
 
 class InterestTransferListReport:
@@ -47,9 +49,10 @@ class InterestTransferListReport:
             InterestPerContract(
                 contract=contract,
                 contact=contract.contact,
-                interest=interest,
+                interest=interest_processor.value,
+                interest_rows=interest_processor.calculation_rows,
             ) for contract in contracts
-            if (interest:=InterestProcessor(contract, year).value) > 0
+            if (interest_processor:=InterestProcessor(contract, year)).value > 0
         ]
         self.sum_interest = sum([data.interest for data in self.per_contract_data])
 
