@@ -60,9 +60,9 @@ class Contract(models.Model):
             date__lte=date
         ).aggregate(
             models.Sum('amount')
-        )['amount__sum'] or Decimal(0)
+        )['amount__sum'] or Decimal('0')
 
-    def contract_versions_in(self, year):
+    def versions_in(self, year):
         return self.contractversion_set.filter(start__year=year).order_by('start')
 
     def interest_rate_on(self, date=None):
@@ -72,7 +72,7 @@ class Contract(models.Model):
                 return version.interest_rate
 
         logger.error("date before start date of first contract version. Returning interest_rate = 0")
-        return Decimal(0)
+        return Decimal('0')
 
     def accounting_entries_in(self, year):
         return self.accountingentry_set.filter(date__year=year).order_by('date')

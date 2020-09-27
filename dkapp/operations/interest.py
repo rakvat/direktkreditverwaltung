@@ -32,7 +32,7 @@ class InterestProcessor:
         for entry in accounting_entries:
             interest_rows.append(self._accounting_row(entry))
 
-        contract_changes = self.contract.contract_versions_in(self.year)
+        contract_changes = self.contract.versions_in(self.year)
         if not contract_changes:
             return interest_rows
 
