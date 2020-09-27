@@ -1,7 +1,8 @@
 import urllib
 from operator import attrgetter
 from datetime import datetime
-from django.http import HttpResponseRedirect
+
+from django.http import HttpResponseRedirect, FileResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import generic
@@ -12,6 +13,7 @@ from dkapp.operations.reports import (
     AverageInterestRateReport,
     InterestTransferListReport,
 )
+from dkapp.operations.pdf.thanks_letters import ThanksLetters
 
 
 class IndexView(generic.TemplateView):
@@ -123,15 +125,18 @@ class ContractsInterest(generic.TemplateView):
     def get(self, request):
         this_year = datetime.now().year
         year = int(request.GET.get('year') or this_year)
-        format = request.GET.get('format')
-        return render(request, self.template_name, {
-            'today': datetime.now().strftime('%d.%m.%Y'),
-            'current_year': year,
-            'current_format': format,
-            'all_years': list(range(this_year, this_year-10, -1)),
-            'all_formats': self.OUTPUT_FORMATS,
-            'report': InterestTransferListReport.create(year),
-        })
+        format = request.GET.get('format') or 'html'
+        if format == 'html':
+            return render(request, self.template_name, {
+                'today': datetime.now().strftime('%d.%m.%Y'),
+                'current_year': year,
+                'current_format': format,
+                'all_years': list(range(this_year, this_year-10, -1)),
+                'all_formats': self.OUTPUT_FORMATS,
+                'report': InterestTransferListReport.create(year),
+            })
+        else:
+            return FileResponse(ThanksLetters().buffer, filename='thanks.pdf')
 
     @staticmethod
     def filter(request):
