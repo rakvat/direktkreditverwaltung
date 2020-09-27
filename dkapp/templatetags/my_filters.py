@@ -1,12 +1,10 @@
 from django import template
-from django.contrib.humanize.templatetags.humanize import intcomma
 
 register = template.Library()
 
 
 def euro(value):
-    value = round(float(value), 2)
-    return f"{intcomma(int(value))},{('%0.2f' % value)[-2:]}€"
+    return "{:,.2f}€".format(value).replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def fraction(value):
