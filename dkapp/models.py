@@ -51,6 +51,10 @@ class Contract(models.Model):
         return self.contractversion_set.order_by('start').last()
 
     @property
+    def first_version(self):
+        return self.contractversion_set.order_by('start').first()
+
+    @property
     def balance(self):
         return self.balance_on(timezone.now())
 

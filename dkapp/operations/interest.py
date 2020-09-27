@@ -38,6 +38,8 @@ class InterestProcessor:
 
         old_interest_rate = interest_rows[0].interest_rate
         for contract_change in contract_changes:
+            if contract_change.id == self.contract.first_version.id:
+                continue
             if contract_change.start == self.start_date:
                 continue
             if old_interest_rate == contract_change.interest_rate:

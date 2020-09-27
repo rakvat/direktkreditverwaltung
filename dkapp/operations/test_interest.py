@@ -77,11 +77,9 @@ class InterestProcessorTestCase(TestCase):
 
         self.processor = InterestProcessor(self.contract, 2019)
 
-        self.assertEqual(len(self.processor.calculation_rows), 4)
+        self.assertEqual(len(self.processor.calculation_rows), 2)
         self.assertEqual(self.processor.calculation_rows[0].amount, Decimal('0'))
         self.assertEqual(self.processor.calculation_rows[1].amount, Decimal('100'))
-        self.assertEqual(self.processor.calculation_rows[2].amount, Decimal('0'))
-        self.assertEqual(self.processor.calculation_rows[3].amount, Decimal('0'))
         self.assertEqual(self.processor.value, Decimal('0.25'))
 
     def test_added_amount_in_year(self):
