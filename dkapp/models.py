@@ -1,7 +1,12 @@
+import logging
+from decimal import Decimal
 from dateutil.relativedelta import relativedelta
 
 from django.utils import timezone
 from django.db import models
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 class Contact(models.Model):
@@ -42,18 +47,35 @@ class Contract(models.Model):
         return f"Direktkreditvertrag {self.number} von {self.contact}"
 
     @property
-    def balance(self, date=None):
+    def last_version(self):
+        return self.contractversion_set.order_by('start').last()
+
+    @property
+    def balance(self):
+        return self.balance_on(timezone.now())
+
+    def balance_on(self, date):
         """Account balance for given date"""
-        date = date or timezone.now()
         return self.accountingentry_set.filter(
             date__lte=date
         ).aggregate(
             models.Sum('amount')
-        )['amount__sum'] or 0
+        )['amount__sum'] or Decimal(0)
 
-    @property
-    def last_version(self):
-        return self.contractversion_set.order_by('start').last()
+    def contract_versions_in(self, year):
+        return self.contractversion_set.filter(start__year=year).order_by('start')
+
+    def interest_rate_on(self, date=None):
+        versions = self.contractversion_set.order_by('-start')
+        for version in versions:
+            if version.start <= date:
+                return version.interest_rate
+
+        logger.error("date before start date of first contract version. Returning interest_rate = 0")
+        return Decimal(0)
+
+    def accounting_entries_in(self, year):
+        return self.accountingentry_set.filter(date__year=year).order_by('date')
 
     @property
     def expiring(self):
