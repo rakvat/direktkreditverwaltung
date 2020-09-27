@@ -59,3 +59,5 @@ coverage.xml
 
 # project specific
 to_import.sqlite3
+dkapp/static/custom/*.png
+dkapp/static/custom/*.yml

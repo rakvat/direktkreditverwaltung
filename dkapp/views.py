@@ -13,7 +13,7 @@ from dkapp.operations.reports import (
     AverageInterestRateReport,
     InterestTransferListReport,
 )
-from dkapp.operations.pdf.thanks_letters import ThanksLetters
+from dkapp.operations.pdf.thanks_letters import ThanksLettersGenerator
 
 
 class IndexView(generic.TemplateView):
@@ -126,6 +126,7 @@ class ContractsInterest(generic.TemplateView):
         this_year = datetime.now().year
         year = int(request.GET.get('year') or this_year)
         format = request.GET.get('format') or 'html'
+        report = InterestTransferListReport.create(year)
         if format == 'html':
             return render(request, self.template_name, {
                 'today': datetime.now().strftime('%d.%m.%Y'),
@@ -133,10 +134,13 @@ class ContractsInterest(generic.TemplateView):
                 'current_format': format,
                 'all_years': list(range(this_year, this_year-10, -1)),
                 'all_formats': self.OUTPUT_FORMATS,
-                'report': InterestTransferListReport.create(year),
+                'report': report,
             })
         else:
-            return FileResponse(ThanksLetters().buffer, filename='thanks.pdf')
+            pdf_generator = ThanksLettersGenerator(
+                contacts=[data.contact for data in report.per_contract_data]
+            )
+            return FileResponse(pdf_generator.buffer, filename='thanks.pdf')
 
     @staticmethod
     def filter(request):
