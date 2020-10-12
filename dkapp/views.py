@@ -159,8 +159,12 @@ class ContractsInterest(generic.TemplateView):
             )
             return FileResponse(pdf_generator.buffer, filename='thanks.pdf')
         else:
-            pdf_generator = InterestLettersGenerator(report=report)
-            return FileResponse(pdf_generator.buffer, filename='thanks.pdf')
+            pdf_generator = InterestLettersGenerator(
+                report=report,
+                year=year,
+                today=datetime.now().strftime('%d.%m.%Y'),
+            )
+            return FileResponse(pdf_generator.buffer, filename='letter.pdf')
 
     @staticmethod
     def filter(request):
