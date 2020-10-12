@@ -1,4 +1,5 @@
 import urllib
+from enum import Enum
 from operator import attrgetter
 from datetime import datetime
 
@@ -14,6 +15,8 @@ from dkapp.operations.reports import (
     InterestTransferListReport,
 )
 from dkapp.operations.pdf.thanks_letters import ThanksLettersGenerator
+from dkapp.operations.pdf.interest_letters import InterestLettersGenerator
+from dkapp.operations.pdf.overview import OverviewGenerator
 
 
 class IndexView(generic.TemplateView):
@@ -113,21 +116,28 @@ class ContractsView(generic.ListView):
         return HttpResponseRedirect(reverse('dkapp:contracts'))
 
 
+class OUTPUT_FORMATS_ENUM(Enum):
+    HTML='html'
+    OVERVIEW='overview'
+    THANKS='thanks'
+    LETTER='letter'
+
+
 class ContractsInterest(generic.TemplateView):
     template_name = 'contracts/interest.html'
     OUTPUT_FORMATS = {
-        'html': 'HTML',
-        'overview': 'PDF-Übersicht',
-        'thanks': 'PDF-Dankesbriefe',
-        'interest_letter': 'PDF-Zinsbriefe',
+        OUTPUT_FORMATS_ENUM.HTML.value: 'HTML',
+        OUTPUT_FORMATS_ENUM.OVERVIEW.value: 'PDF-Übersicht',
+        OUTPUT_FORMATS_ENUM.THANKS.value: 'PDF-Dankesbriefe',
+        OUTPUT_FORMATS_ENUM.LETTER.value: 'PDF-Zinsbriefe',
     }
 
     def get(self, request):
         this_year = datetime.now().year
         year = int(request.GET.get('year') or this_year)
-        format = request.GET.get('format') or 'html'
+        format = request.GET.get('format') or OUTPUT_FORMATS_ENUM.HTML.value
         report = InterestTransferListReport.create(year)
-        if format == 'html':
+        if format == OUTPUT_FORMATS_ENUM.HTML.value:
             return render(request, self.template_name, {
                 'today': datetime.now().strftime('%d.%m.%Y'),
                 'current_year': year,
@@ -136,10 +146,20 @@ class ContractsInterest(generic.TemplateView):
                 'all_formats': self.OUTPUT_FORMATS,
                 'report': report,
             })
-        else:
+        elif format == OUTPUT_FORMATS_ENUM.OVERVIEW.value:
+            pdf_generator = OverviewGenerator(
+                report=report,
+                year=year,
+                today=datetime.now().strftime('%d.%m.%Y'),
+            )
+            return FileResponse(pdf_generator.buffer, filename='overview.pdf')
+        elif format == OUTPUT_FORMATS_ENUM.THANKS.value:
             pdf_generator = ThanksLettersGenerator(
                 contacts=[data.contact for data in report.per_contract_data]
             )
+            return FileResponse(pdf_generator.buffer, filename='thanks.pdf')
+        else:
+            pdf_generator = InterestLettersGenerator(report=report)
             return FileResponse(pdf_generator.buffer, filename='thanks.pdf')
 
     @staticmethod

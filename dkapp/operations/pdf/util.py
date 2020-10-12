@@ -13,4 +13,3 @@ def get_image(path, width=1*cm):
 def print_fonts():
     c = canvas.Canvas('tmp.pdf')
     print(c.getAvailableFonts())
-
