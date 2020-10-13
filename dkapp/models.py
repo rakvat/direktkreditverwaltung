@@ -29,6 +29,10 @@ class Contact(models.Model):
     def full_name(self):
         return f"{self.last_name}, {self.first_name}"
 
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Contract(models.Model):
     class Category(models.TextChoices):

@@ -1,5 +1,4 @@
 import io
-import yaml
 
 from typing import List
 
@@ -20,7 +19,7 @@ from reportlab.lib.pagesizes import A4, landscape
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 from dkapp.operations.reports import InterestPerContract
-from .util import get_image
+from .util import get_image, get_custom_texts
 
 
 class ThanksLettersGenerator:
@@ -28,7 +27,7 @@ class ThanksLettersGenerator:
     IMG_WIDTH=5.0*cm
 
     def __init__(self, contacts: List[InterestPerContract]):
-        snippets = self._get_snippets()
+        snippets = get_custom_texts()
 
         self.buffer = io.BytesIO()
 
@@ -98,14 +97,3 @@ class ThanksLettersGenerator:
 
         doc.build(story)
         self.buffer.seek(0)
-
-    def _get_snippets(self):
-        path = staticfiles_storage.path('custom/text_snippets.yml')
-        snippets = {}
-        with open(path, 'r') as stream:
-            try:
-                snippets = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-        return snippets
-
