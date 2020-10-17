@@ -39,7 +39,7 @@ class InterestLettersGenerator:
         doc = SimpleDocTemplate(self.buffer, pagesize=A4)
         doc.leftMargin = 1.5*cm
         doc.rightMargin = 1.5*cm
-        doc.topMargin = 1.5*cm
+        doc.topMargin = 1.0*cm
         doc.bottomMargin = 1.5*cm
 
         for data in report.per_contract_data:
@@ -86,6 +86,7 @@ class InterestLettersGenerator:
     def _setup_styles(self):
         self.lightgrey = colors.Color(0.8, 0.8, 0.8)
         self.grey = colors.Color(0.5, 0.5, 0.5)
+        self.darkgrey = colors.Color(0.2, 0.2, 0.2)
 
         styles = getSampleStyleSheet()
 
@@ -106,68 +107,73 @@ class InterestLettersGenerator:
         self.styleG = copy.deepcopy(self.styleL)
         self.styleG.textColor = self.grey
 
-    def _header(self, data):
-        header = []
-        img = get_image(staticfiles_storage.path('custom/logo.png'), width=self.LOGO_WIDTH)
-        table_style = TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        self.styleSS = copy.deepcopy(self.styleL)
+        self.styleSS.fontSize = 6
+        self.styleSS.leading = 8
+        self.styleSS.textColor = self.darkgrey
+        self.base_table_style = [
             ('LEFTPADDING', (0, 0), (-1, -1), 0),
             ('RIGHTPADDING', (0, 0), (-1, -1), 0),
             ('TOPPADDING', (0, 0), (-1, -1), 0),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+        ]
+
+    def _header(self, data):
+        header = []
+        img = get_image(staticfiles_storage.path('custom/logo.png'), width=self.LOGO_WIDTH)
+        table_style = TableStyle([
+            *self.base_table_style,
+            ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ])
         header.append(Table([[
             img,
         ]], style=table_style, colWidths='*'))
 
-        sender_line = Table([[
-            Paragraph(f"{self.snippets['gmbh_name']}", self.styleG),
-            Paragraph(f"{self.snippets['street_no']}", self.styleG),
-            Paragraph(f"{self.snippets['zipcode']} {self.snippets['city']}", self.styleG),
-        ]], style = table_style, colWidths=[3*cm, 2.5*cm, 2.5*cm])
-
         table_style = TableStyle([
+            *self.base_table_style,
             ('ALIGN', (0, 0), (0, -1), 'LEFT'),
             ('VALIGN', (0, 0), (0, -1), 'BOTTOM'),
             ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
             ('VALIGN', (1, 0), (1, -1), 'TOP'),
-            ('TOPPADDING', (0, 0), (-1, -1), 0),
-            ('TOPPADDING', (1, 1), (-1, -1), 4),
-            ('LEFTPADDING', (0, 0), (-1, -1), 0),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
         ])
-        header.append(Table([[
-                None, Paragraph("<i>Projekt im Mietshäuser Syndikat</i>", self.styleL),
-            ], [
-                None,
-                Paragraph((
-                    f"{self.snippets['street_no']}<br/>"
-                    f"{self.snippets['zipcode']} {self.snippets['city']}"
-                ), self.styleL),
-            ], [
-                sender_line,
-                Paragraph(f"e-mail: {self.snippets['email']}<br/>{self.snippets['web']}", self.styleL),
-                ]], style=table_style, colWidths=[13.4*cm, 4.2*cm]))
-
-        header.append(Paragraph(data.contract.contact.name, self.styleN))
+        left_table_style = TableStyle([
+            *self.base_table_style,
+        ])
+        right_table_style = TableStyle([
+            *self.base_table_style,
+        ])
         address_lines = data.contract.contact.address.split(',')
-        header.append(Paragraph(address_lines[0], self.styleN))
-        header.append(Spacer(1, 0.3*cm))
-        header.append(Paragraph(address_lines[1], self.styleN))
-        header.append(Spacer(1, 1*cm))
-        header.append(
-            Table(
-                [[
-                    Paragraph(f"{self.snippets['city']}, {self.today}", self.styleNR)
-                ]],
-                style=TableStyle([
-                    ('ALIGN', (0, 0), (0, 0), 'RIGHT'),
-                    ('RIGHTPADDING', (0, 0), (-1, -1), 0),
-                ]),
-                colWidths=['*']
-            )
+        left_column = Table([
+            [Spacer(1, 1.2*cm)],
+            [Paragraph(f"{self.snippets['gmbh_name']} - {self.snippets['street_no']} - {self.snippets['zipcode']} {self.snippets['city']}", self.styleSS)],
+            [Spacer(1, 0.5*cm)],
+            [Paragraph(data.contract.contact.name, self.styleN)],
+            [Paragraph(address_lines[0], self.styleN)],
+            [Spacer(1, 0.3*cm)],
+            [Paragraph(address_lines[1], self.styleN)],
+            ], style=left_table_style, colWidths='*')
+        right_column = Table([
+            [Paragraph("<i>Projekt im Mietshäuser Syndikat</i>", self.styleL)],
+            [Spacer(1, 0.3*cm)],
+            [Paragraph((
+                f"{self.snippets['street_no']}<br/>"
+                f"{self.snippets['zipcode']} {self.snippets['city']}"
+            ), self.styleL)],
+            [Spacer(1, 0.3*cm)],
+            [Paragraph(f"e-mail: {self.snippets['email']}<br/>{self.snippets['web']}", self.styleL)],
+        ], style=right_table_style, colWidths='*')
+        date = Table([[ Paragraph(f"{self.snippets['city']}, {self.today}", self.styleNR) ]],
+            style=TableStyle([
+                ('ALIGN', (0, 0), (0, 0), 'RIGHT'),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+            ]),
+            colWidths=['*']
         )
+        header.append(Table([[left_column, right_column]], style=table_style, colWidths=[13.4*cm, 4.2*cm]))
+
+        header.append(Spacer(1, 1.5*cm))
+        header.append(date)
         return header
 
     def _draw_footer(self, canvas, doc):
