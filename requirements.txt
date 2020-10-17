@@ -1,0 +1,4 @@
+Django
+model_bakery
+reportlab
+pyyaml
