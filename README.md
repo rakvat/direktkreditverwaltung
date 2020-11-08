@@ -19,7 +19,7 @@ Nach Erfordernissen eines Mietshäuser Syndikat Projekts.
 
 ### Zinsberechnung
 
-- nach 30/360
+- nach 30/360 (Europäische Methode)
 
 ### PDF Ausgaben
 
@@ -34,3 +34,10 @@ Nach Erfordernissen eines Mietshäuser Syndikat Projekts.
 - `python manage.py collectstatic` copies static files (e.g. your custom files) to the root folder.
 - `python manage.py runserver` starts the server.
 - Access http://localhost:8000/ in your browswer and enter some data.
+
+### Migrate from [the Rails Version](https://github.com/rakvat/direktkreditverwaltung)
+
+If you used [the now deprecated Rails version](https://github.com/rakvat/direktkreditverwaltung) before, you can migrate like this:
+
+- find the .sqlite3 file of the rails app
+- run `python manage.py import_from_rails_app rails_app_sqlite.sqlite3`
