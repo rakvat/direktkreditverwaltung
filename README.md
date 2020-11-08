@@ -35,9 +35,9 @@ Nach Erfordernissen eines Mietshäuser Syndikat Projekts.
 - `python manage.py runserver` starts the server.
 - Access http://localhost:8000/ in your browswer and enter some data.
 
-### Migrate from [the Rails Version](https://github.com/rakvat/direktkreditverwaltung)
+### Migrate from [the Rails Version](https://github.com/rakvat/direktkreditverwaltung_deprecated)
 
-If you used [the now deprecated Rails version](https://github.com/rakvat/direktkreditverwaltung) before, you can migrate like this:
+If you used [the now deprecated Rails version](https://github.com/rakvat/direktkreditverwaltung_deprecated) before, you can migrate like this:
 
 - find the .sqlite3 file of the rails app
 - run `python manage.py import_from_rails_app rails_app_sqlite.sqlite3`
