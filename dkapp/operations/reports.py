@@ -1,4 +1,6 @@
-from typing import List
+from datetime import datetime, date
+from decimal import Decimal
+from typing import List, Tuple
 from dataclasses import dataclass
 from dkapp.models import Contact, Contract, AccountingEntry
 from dkapp.operations.interest import InterestProcessor, InterestDataRow
@@ -60,3 +62,41 @@ class InterestTransferListReport:
     def create(cls, year):
         all_contracts = Contract.objects.order_by('number').prefetch_related('contact')
         return cls(year, contracts=all_contracts)
+
+
+class RemainingCategory:
+    def __init__(self):
+        self.contracts: List[Tuple[Contract, Decimal]] = []
+        self.balance_sum: Decimal = Decimal(0)
+
+    def add(self, contract: Contract, balance: Decimal) -> None:
+        self.contracts.append((contract, balance))
+        self.balance_sum += balance
+
+
+class RemainingContractsReport:
+    def __init__(self, cutoff_date: datetime, contracts: List[Contract]):
+        self.less_than_one: RemainingCategory = RemainingCategory()
+        self.between_one_and_five: RemainingCategory = RemainingCategory()
+        self.more_than_five: RemainingCategory = RemainingCategory()
+
+        for contract in contracts:
+            if contract.first_version.start > cutoff_date.date():
+                continue
+            balance = contract.balance_on(cutoff_date)
+            if balance == 0:
+                continue
+            remaining_years = contract.remaining_years(cutoff_date.date())
+            if remaining_years <= 1:
+                self.less_than_one.add(contract, balance)
+            elif remaining_years > 5:
+                self.more_than_five.add(contract, balance)
+            else:
+                self.between_one_and_five.add(contract, balance)
+
+
+    @classmethod
+    def create(cls, cutoff_date: datetime):
+        all_contracts = Contract.objects.order_by('number').prefetch_related('contact')
+        return cls(cutoff_date, contracts=all_contracts)
+

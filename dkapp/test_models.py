@@ -73,8 +73,16 @@ class ContractTestCase(TestCase):
         self.assertEqual(self.contract.balance, Decimal('300'))
 
     def test_balance_on(self):
-        self.assertEqual( self.contract.balance_on(date(2019, 1, 1)), Decimal('0'))
-        self.assertEqual( self.contract.balance_on(date(2019, 2, 10)), Decimal('100'))
-        self.assertEqual( self.contract.balance_on(date(2019, 12, 31)), Decimal('100'))
-        self.assertEqual( self.contract.balance_on(date(2020, 1, 1)), Decimal('200'))
-        self.assertEqual( self.contract.balance_on(date(2020, 1, 15)), Decimal('300'))
+        self.assertEqual(self.contract.balance_on(date(2019, 1, 1)), Decimal('0'))
+        self.assertEqual(self.contract.balance_on(date(2019, 2, 10)), Decimal('100'))
+        self.assertEqual(self.contract.balance_on(date(2019, 12, 31)), Decimal('100'))
+        self.assertEqual(self.contract.balance_on(date(2020, 1, 1)), Decimal('200'))
+        self.assertEqual(self.contract.balance_on(date(2020, 1, 15)), Decimal('300'))
+
+    def test_expiring(self):
+        self.assertEqual(self.contract.expiring, date(2030, 3, 31))
+
+    def test_remaining_years(self):
+        self.assertGreater(self.contract.remaining_years(),  2030 - date.today().year - 1)
+        self.assertGreater(self.contract.remaining_years(date(2021, 12, 31)),  8)
+        self.assertLess(self.contract.remaining_years(date(2021, 12, 31)),  9)

@@ -25,6 +25,7 @@ urlpatterns = [
     path('contracts_interest_transfer_list/', views.ContractsInterestTransferListView.as_view(), name='contracts_interest_transfer_list'),
     path('contracts_interest_average/', views.ContractsAverageInterestView.as_view(), name='contracts_interest_average'),
     path('contracts_expiring/', views.ContractsExpiringView.as_view(), name='contracts_expiring'),
+    path('contracts_remaining/', views.ContractsRemainingView.as_view(), name='contracts_remaining'),
 
     path('contract_versions/', views.ContractVersionsView.as_view(), name='contract_versions'),
     path('contract_versions/<int:pk>/', views.ContractVersionView.as_view(), name='contract_version'),

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load my_filters %}
+{% block title %}Übersicht Direktkreditverträge, sortiert nach Restlaufzeit{% endblock %}
+
+{% block content %}
+
+<h2>Übersicht Direktkreditverträge, sortiert nach Restlaufzeit</h2>
+
+Die Ergebnisse dieser Auswertung werden in der Offenlegung im E-Bundesanzeiger verwendet.
+
+Wähle das Jahr der Offenlegung (Stichtag 31.12.)
+
+<h4>Jahr</h4>
+
+<form action="{% url 'dkapp:contracts_remaining' %}" method="post">
+  {% csrf_token %}
+  <select name='year'>
+    {% for year in all_years %}
+      {% if year == current_year %}
+        <option value={{year}} selected>{{year}}</option>
+      {% else %}
+        <option value={{year}}>{{year}}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
+  <input class="btn btn-success" type="submit" value="Anzeigen">
+</from>
+
+<br/>
+
+
+<div>
+  <h3>Restlaufzeit mehr als fünf Jahre zum {{cutoff_date | date:"SHORT_DATE_FORMAT" }}</h3>
+  {% include "contracts/remaining_snippet.html" with report_part=report.more_than_five %}
+</div>
+
+<br/>
+<div>
+  <h3>Restlaufzeit zwischen einem und fünf Jahren zum {{cutoff_date | date:"SHORT_DATE_FORMAT" }}</h3>
+  {% include "contracts/remaining_snippet.html" with report_part=report.between_one_and_five %}
+</div>
+
+<br/>
+<div>
+  <h3>Restlaufzeit bis zu einem Jahr zum {{cutoff_date | date:"SHORT_DATE_FORMAT" }}</h3>
+  {% include "contracts/remaining_snippet.html" with report_part=report.less_than_one %}
+</div>
+
+
+
+{% endblock %}

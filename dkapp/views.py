@@ -13,6 +13,7 @@ from dkapp.forms import ContactForm, ContractForm, ContractVersionForm, Accounti
 from dkapp.operations.reports import (
     AverageInterestRateReport,
     InterestTransferListReport,
+    RemainingContractsReport,
 )
 from dkapp.operations.pdf.thanks_letters import ThanksLettersGenerator
 from dkapp.operations.pdf.interest_letters import InterestLettersGenerator
@@ -213,6 +214,27 @@ class ContractsExpiringView(generic.ListView):
         # dev speed here
         return sorted(filter(lambda c: c.balance > 0, contracts), key=attrgetter('expiring'))
 
+
+class ContractsRemainingView(generic.TemplateView):
+    template_name = 'contracts/remaining.html'
+    context_object_name = 'contracts'
+
+    def get(self, request):
+        this_year = datetime.now().year
+        year = int(request.GET.get('year') or this_year)
+        cutoff_date = datetime(year=year, month=12, day=31)
+        return render(request, self.template_name, {
+            'current_year': year,
+            'cutoff_date': cutoff_date,
+            'all_years': list(range(this_year, this_year-10, -1)),
+            'report': RemainingContractsReport.create(cutoff_date),
+        })
+
+    def post(self, request):
+        year = request.POST.get('year')
+        return HttpResponseRedirect(
+            reverse('dkapp:contracts_remaining') + f"?year={year}"
+        )
 
 class ContractView(generic.DetailView):
     model = Contract

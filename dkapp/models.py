@@ -1,5 +1,7 @@
 import logging
 from decimal import Decimal
+from typing import Optional
+from datetime import date
 from dateutil.relativedelta import relativedelta
 
 from django.utils import timezone
@@ -89,6 +91,11 @@ class Contract(models.Model):
     def expiring(self):
         last_version = self.last_version
         return last_version.start + relativedelta(months=last_version.duration_months or 0) + relativedelta(years=last_version.duration_years or 0)
+
+    def remaining_years(self, reference_date: Optional[date] = None) -> float:
+        if not reference_date:
+            reference_date = date.today()
+        return (self.expiring - reference_date).days/365
 
     @classmethod
     def total_sum(cls):

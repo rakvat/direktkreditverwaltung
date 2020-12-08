@@ -1,0 +1,21 @@
+{% load my_filters %}
+<table class='table table-striped'>
+  <tr>
+    <th>Ablaufdatum</th>
+    <th>Nummer</th>
+    <th>Kontakt</th>
+    <th>Kontostand</th>
+    <th></th>
+  </tr>
+
+{% for contract, balance in report_part.contracts %}
+  <tr>
+    <td>{{ contract.expiring | date:"SHORT_DATE_FORMAT"  }}</td>
+    <td>{{ contract.number }}</td>
+    <td>{{ contract }}</td>
+    <td>{{ balance | euro }}</td>
+    <td><a href="{% url 'dkapp:contract' contract.id %}">Anzeigen</a></td>
+  </tr>
+{% endfor %}
+</table>
+<b>Sum: {{report_part.balance_sum | euro }}</b>
