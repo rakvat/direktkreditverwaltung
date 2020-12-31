@@ -62,3 +62,4 @@ to_import.sqlite3
 dkapp/static/custom/*.png
 dkapp/static/custom/*.yml
 root
+build

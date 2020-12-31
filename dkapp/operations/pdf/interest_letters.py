@@ -139,13 +139,14 @@ class InterestLettersGenerator:
         ])
         left_table_style = TableStyle([
             *self.base_table_style,
+            ('LEFTPADDING', (0, 0), (-1, -1), 20),
         ])
         right_table_style = TableStyle([
             *self.base_table_style,
         ])
         address_lines = data.contract.contact.address.split(',')
         left_column = Table([
-            [Spacer(1, 1.2*cm)],
+            [Spacer(1, 1.7*cm)],
             [Paragraph(f"{self.snippets['gmbh_name']} - {self.snippets['street_no']} - {self.snippets['zipcode']} {self.snippets['city']}", self.styleSS)],
             [Spacer(1, 0.5*cm)],
             [Paragraph(data.contract.contact.name, self.styleN)],

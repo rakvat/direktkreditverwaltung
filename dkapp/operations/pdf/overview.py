@@ -46,5 +46,8 @@ class OverviewGenerator:
             story.append(Spacer(1, 0.1*cm))
             story.append(Paragraph(f"Zinsen {year}: {euro(data.interest)}", styleB))
 
+        story.append(Spacer(1, 0.5*cm))
+        story.append(Paragraph(f"SUMME ZINSEN {year}: {euro(report.sum_interest)}", styleB))
+
         doc.build(story)
         self.buffer.seek(0)
