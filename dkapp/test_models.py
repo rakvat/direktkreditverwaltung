@@ -11,7 +11,7 @@ class ContractTestCase(TestCase):
         self.contract = baker.make('dkapp.Contract')
         self.contract_version1 = ContractVersion.objects.create(
             start=date(2019, 2, 10),
-            duration_years=10,
+            duration_years=2,
             interest_rate=Decimal('0.01'),
             version=1,
             contract=self.contract,
@@ -79,10 +79,18 @@ class ContractTestCase(TestCase):
         self.assertEqual(self.contract.balance_on(date(2020, 1, 1)), Decimal('200'))
         self.assertEqual(self.contract.balance_on(date(2020, 1, 15)), Decimal('300'))
 
+    def test_expiring_version(self):
+        self.assertEqual(self.contract.first_version.expiring, date(2021, 2, 10))
+
     def test_expiring(self):
         self.assertEqual(self.contract.expiring, date(2030, 3, 31))
+
+    def test_expiring_at(self):
+        self.assertEqual(self.contract.expiring_at(date(2019,3, 31)), date(2021, 2, 10))
 
     def test_remaining_years(self):
         self.assertGreater(self.contract.remaining_years(),  2030 - date.today().year - 1)
         self.assertGreater(self.contract.remaining_years(date(2021, 12, 31)),  8)
         self.assertLess(self.contract.remaining_years(date(2021, 12, 31)),  9)
+        self.assertGreater(self.contract.remaining_years(date(2019, 12, 31)),  1)
+        self.assertLess(self.contract.remaining_years(date(2019, 12, 31)),  2)

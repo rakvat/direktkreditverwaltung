@@ -75,6 +75,15 @@ class Contract(models.Model):
     def versions_in(self, year):
         return self.contractversion_set.filter(start__year=year).order_by('start')
 
+    def version_at(self, reference_date: date):
+        current_version = self.first_version
+        sorted = self.contractversion_set.order_by('start').order_by('start')
+        for version in sorted:
+            if version.start > reference_date:
+                return current_version
+            current_version = version
+        return current_version
+
     def interest_rate_on(self, date=None):
         versions = self.contractversion_set.order_by('-start')
         for version in versions:
@@ -89,13 +98,15 @@ class Contract(models.Model):
 
     @property
     def expiring(self):
-        last_version = self.last_version
-        return last_version.start + relativedelta(months=last_version.duration_months or 0) + relativedelta(years=last_version.duration_years or 0)
+        return self.last_version.expiring
+
+    def expiring_at(self, reference_date: date):
+        return self.version_at(reference_date).expiring
 
     def remaining_years(self, reference_date: Optional[date] = None) -> float:
         if not reference_date:
             reference_date = date.today()
-        return (self.expiring - reference_date).days/365
+        return (self.expiring_at(reference_date) - reference_date).days/365
 
     @classmethod
     def total_sum(cls):
@@ -116,6 +127,9 @@ class ContractVersion(models.Model):
     def __str__(self):
         return f"Version {self.version} des Vertrags {self.contract}"
 
+    @property
+    def expiring(self):
+        return self.start + relativedelta(months=self.duration_months or 0) + relativedelta(years=self.duration_years or 0)
 
 class AccountingEntry(models.Model):
     date = models.DateField()
