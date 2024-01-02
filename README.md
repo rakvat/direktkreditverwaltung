@@ -29,8 +29,8 @@ Nach Erfordernissen eines Mietshäuser Syndikat Projekts.
 ## Setup
 
 - Use a modern python version.
-- `pip install -r reqirements.txt`
-- In `dkapp/static/custom/` are three template files which are used for the PDF generation. Copy the files in the same location removing the `_template` from the filename. Replace the copied fieles with your content.
+- `pip install -r requirements.txt`
+- In `dkapp/static/custom/` are three template files which are used for the PDF generation. Copy the files in the main folder (the folder where e.g. 'dkapp' and 'README.md' are in) removing the `_template` from the filename. Replace the copied files with your content.
 - `python manage.py collectstatic` copies static files (e.g. your custom files) to the root folder.
 - `python manage.py runserver` starts the server.
 - Access http://localhost:8000/ in your browswer and enter some data.
